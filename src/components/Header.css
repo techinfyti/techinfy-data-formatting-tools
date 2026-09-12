@@ -1,0 +1,120 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface-brand);
+  background: color-mix(in srgb, var(--surface-brand) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header__inner {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand__logo {
+  height: 56px;
+  width: auto;
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand__text-sub {
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.site-nav--desktop {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+}
+
+.site-nav__link {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 9px 18px;
+  border-radius: 999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.site-nav__link:hover {
+  color: var(--text);
+  background: var(--bg-elevated);
+  text-decoration: none;
+}
+.site-nav__link.is-active {
+  color: var(--brand-contrast);
+  background: var(--logo-gradient);
+  box-shadow: var(--shadow-sm);
+}
+.site-nav__link.is-active:hover {
+  color: var(--brand-contrast);
+  background: var(--logo-gradient);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+.site-nav--mobile {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .site-nav--desktop {
+    display: none;
+  }
+  .menu-toggle {
+    display: inline-flex;
+  }
+  .site-nav--mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px 16px 16px;
+    border-top: 1px solid var(--border);
+    gap: 4px;
+  }
+  .site-nav--mobile .site-nav__link {
+    padding: 14px 16px;
+    font-size: 1rem;
+    border-radius: var(--radius-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .brand__logo {
+    height: 44px;
+  }
+  .brand__text-sub {
+    display: none;
+  }
+}

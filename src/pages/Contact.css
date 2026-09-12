@@ -1,0 +1,27 @@
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.contact-form,
+.contact-info {
+  padding: 28px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.contact-textarea {
+  min-height: 140px;
+  resize: vertical;
+  font-family: var(--font-sans);
+}
+
+@media (max-width: 760px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}

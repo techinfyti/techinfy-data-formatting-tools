@@ -1,0 +1,27 @@
+.ad-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  width: 100%;
+  margin: 28px 0;
+}
+
+.ad-slot--banner {
+  min-height: 90px;
+}
+
+.ad-slot--inline {
+  min-height: 60px;
+}
+
+.ad-slot--sidebar {
+  min-height: 250px;
+  margin: 0;
+}

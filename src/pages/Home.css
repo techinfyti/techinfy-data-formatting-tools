@@ -1,0 +1,78 @@
+@import "./pages.css";
+
+.home-title {
+  padding-top: 36px;
+  text-align: center;
+}
+
+.home-title h1 {
+  font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+  animation: title-color-cycle 6s ease-in-out infinite;
+}
+
+@keyframes title-color-cycle {
+  0%, 100% { color: #1c6dd6; }
+  25%      { color: #02c9e8; }
+  50%      { color: #1ed398; }
+  75%      { color: #a259ff; }
+}
+
+.section--top {
+  padding-top: 24px;
+}
+
+.highlights__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.highlight-card {
+  padding: 24px;
+}
+
+.highlight-card__icon {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+.highlight-card__title {
+  font-size: 1.02rem;
+  margin-bottom: 8px;
+}
+
+.highlight-card__text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.cta__box {
+  padding: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cta__box .btn {
+  margin-top: 12px;
+}
+
+.cta__subheading {
+  max-width: none;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .cta__subheading {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .cta__box {
+    padding: 28px 20px;
+  }
+}

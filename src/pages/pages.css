@@ -1,0 +1,84 @@
+.section {
+  padding: 56px 0;
+}
+
+.section__heading {
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  color: var(--heading-color);
+  margin-bottom: 10px;
+}
+
+.section__subheading {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 640px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.page-hero {
+  padding: 56px 0 36px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--brand-soft), transparent);
+}
+
+.page-hero__eyebrow {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.page-hero h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 10px 0 12px;
+}
+
+.page-hero p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 680px;
+  line-height: 1.65;
+}
+
+.prose h2 {
+  font-size: 1.3rem;
+  margin: 32px 0 12px;
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose h3 {
+  font-size: 1.05rem;
+  margin: 20px 0 8px;
+}
+
+.prose p {
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+
+.prose ul {
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+
+.prose li {
+  margin-bottom: 6px;
+}
+
+.prose strong {
+  color: var(--text);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
