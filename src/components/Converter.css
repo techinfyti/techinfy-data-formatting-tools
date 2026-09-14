@@ -36,6 +36,13 @@
 
 .advanced-toggle {
   gap: 8px;
+  color: var(--heading-color);
+  border-color: var(--heading-color);
+}
+.advanced-toggle:hover {
+  color: var(--heading-color);
+  border-color: var(--heading-color);
+  background: var(--brand-soft);
 }
 
 .advanced-toggle__chevron {
