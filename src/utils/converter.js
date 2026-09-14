@@ -73,6 +73,13 @@ export function applyFormatting(values, options) {
     result = [...result].sort((a, b) => b.localeCompare(a, undefined, { sensitivity: "base" }));
   }
 
+  if (options.removePrefix) {
+    result = result.map((v) => (v.startsWith(options.removePrefix) ? v.slice(options.removePrefix.length) : v));
+  }
+  if (options.removeSuffix) {
+    result = result.map((v) => (v.endsWith(options.removeSuffix) ? v.slice(0, v.length - options.removeSuffix.length) : v));
+  }
+
   if (options.prefix) {
     result = result.map((v) => `${options.prefix}${v}`);
   }

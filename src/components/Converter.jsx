@@ -25,6 +25,8 @@ const DEFAULT_OPTIONS = {
   sortOrder: "none",
   addQuotes: false,
   quoteChar: "double",
+  removePrefix: "",
+  removeSuffix: "",
   prefix: "",
   suffix: "",
 };
@@ -334,6 +336,28 @@ export default function Converter({ id }) {
                 </label>
               </div>
             )}
+            <div className="text-field-group">
+              <label className="field-label" htmlFor="remove-prefix-input">Remove prefix</label>
+              <input
+                id="remove-prefix-input"
+                type="text"
+                className="text-input"
+                placeholder="e.g. item_"
+                value={options.removePrefix}
+                onChange={(e) => handleOptionChange("removePrefix", e.target.value)}
+              />
+            </div>
+            <div className="text-field-group">
+              <label className="field-label" htmlFor="remove-suffix-input">Remove suffix</label>
+              <input
+                id="remove-suffix-input"
+                type="text"
+                className="text-input"
+                placeholder="e.g. .csv"
+                value={options.removeSuffix}
+                onChange={(e) => handleOptionChange("removeSuffix", e.target.value)}
+              />
+            </div>
             <div className="text-field-group">
               <label className="field-label" htmlFor="prefix-input">Add prefix</label>
               <input
