@@ -10,6 +10,14 @@ import "./Converter.css";
 
 const SAMPLE_INPUT = "Apple\nOrange\nBanana\nMango\nGrape";
 
+// Common binary formats a user might mistakenly drop in — reject by name up
+// front with a clear message rather than loading them as garbled "text".
+const BINARY_FILE_PATTERN = /\.(xlsx|xls|docx|doc|pdf|pptx|ppt|zip|rar|7z|png|jpe?g|gif|bmp|exe|bin)$/i;
+// Fallback for binary files with a misleading extension: real text files
+// rarely contain the Unicode replacement character or raw control bytes.
+// eslint-disable-next-line no-control-regex -- intentional: detecting binary content
+const BINARY_CONTENT_PATTERN = /[�\x00-\x08\x0E-\x1F]/g;
+
 const DEFAULT_OPTIONS = {
   removeDuplicates: false,
   removeEmptyLines: true,
@@ -166,9 +174,20 @@ export default function Converter({ id }) {
       e.target.value = "";
       return;
     }
+    if (BINARY_FILE_PATTERN.test(file.name)) {
+      showToast("That's a binary file (e.g. Excel/Word), not plain text. Please export it as .csv or .txt first.");
+      e.target.value = "";
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
-      setInput(String(reader.result ?? ""));
+      const text = String(reader.result ?? "");
+      const suspicious = (text.match(BINARY_CONTENT_PATTERN) || []).length;
+      if (text.length > 0 && suspicious / text.length > 0.02) {
+        showToast("That file doesn't look like plain text. Please upload a .txt, .csv, .tsv or .log file.");
+        return;
+      }
+      setInput(text);
       setActiveQuickPreset(null);
     };
     reader.onerror = () => showToast("Couldn't read that file.");
