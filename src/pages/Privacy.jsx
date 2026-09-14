@@ -37,7 +37,7 @@ export default function Privacy() {
 
         <h2>File uploads and downloads</h2>
         <p>
-          If you use the "Upload file" option, the file is read locally by your browser using the
+          If you use the "Upload .txt/CSV" option, the file is read locally by your browser using the
           standard File API and never leaves your device. If you use "Download", the output file
           is generated locally in your browser and saved directly by your browser — again, without
           any server involved.
@@ -52,8 +52,12 @@ export default function Privacy() {
 
         <h2>Cookies</h2>
         <p>
-          TechInfy Data Tools does not set tracking cookies. Any storage used is limited to the
-          local, on-device theme preference described above.
+          Beyond the local theme preference described above, TechInfy Data Tools does not set its
+          own tracking cookies. If you visit from the European Economic Area, the UK, or
+          Switzerland, you may see a consent banner (served through a Google-certified Consent
+          Management Platform) asking how Google may use cookies for advertising on this site.
+          Your choice there is itself remembered using a cookie. You can change your answer at any
+          time by clearing your browser's cookies for this site.
         </p>
 
         <h2>Analytics</h2>
@@ -65,10 +69,17 @@ export default function Privacy() {
 
         <h2>Advertising</h2>
         <p>
-          The site does not currently display advertising. We have reserved space in the layout
-          for possible future ad placements, but no ad network is active today, and no page
-          content or user data is shared with an ad provider. This policy will be updated before
-          any advertising is introduced.
+          TechInfy Data Tools has applied to show ads through Google AdSense, and the AdSense
+          script is loaded on this site in preparation. Ads may not yet be showing while Google
+          reviews the site. Once active, Google AdSense may use cookies and similar technologies
+          to serve and measure ads, which can include personalized advertising based on your
+          activity, subject to the consent choice described above for EEA/UK/Swiss visitors. We do
+          not share the content you type into any converter with Google or any other ad provider —
+          that data never leaves your browser, regardless of whether ads are showing. See{" "}
+          <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">
+            Google's advertising policy
+          </a>{" "}
+          for how Google itself handles data used for ads.
         </p>
 
         <h2>Contact us</h2>
