@@ -62,9 +62,11 @@ export default function Privacy() {
 
         <h2>Analytics</h2>
         <p>
-          The current version of this site does not include any analytics or tracking scripts. If
-          that changes in the future, we will update this policy to describe what is collected
-          and why before any such tool is enabled.
+          We use Cloudflare Web Analytics to understand overall traffic and performance — things
+          like page views, visit counts, load times, and approximate visitor country or browser.
+          It's privacy-first by design: it does not use cookies, does not track you across other
+          sites, and cannot identify you personally. We do not use Google Analytics or any other
+          cross-site tracking tool.
         </p>
 
         <h2>Advertising</h2>
