@@ -36,23 +36,29 @@
 
 .advanced-toggle {
   gap: 8px;
-  color: var(--heading-color);
+  color: #ffffff;
+  background: var(--heading-color);
   border-color: var(--heading-color);
-  animation: advanced-toggle-blink 1.8s ease-in-out infinite;
 }
 .advanced-toggle:hover {
-  color: var(--heading-color);
+  color: #ffffff;
+  background: var(--heading-color);
   border-color: var(--heading-color);
-  background: var(--brand-soft);
+  opacity: 0.9;
+}
+.advanced-toggle__label {
+  animation: advanced-toggle-blink 1.4s ease-in-out infinite;
+}
+.advanced-toggle:hover .advanced-toggle__label {
   animation: none;
 }
 
 @keyframes advanced-toggle-blink {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(28, 109, 214, 0.45);
+    opacity: 1;
   }
   50% {
-    box-shadow: 0 0 0 6px rgba(28, 109, 214, 0);
+    opacity: 0.35;
   }
 }
 

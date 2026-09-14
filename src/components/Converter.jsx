@@ -255,7 +255,7 @@ export default function Converter({ id }) {
               aria-controls="more-options-panel"
               onClick={() => setShowAdvanced((v) => !v)}
             >
-              More options
+              <span className="advanced-toggle__label">More options</span>
               <span className={"advanced-toggle__chevron" + (showAdvanced ? " is-open" : "")} aria-hidden="true">▾</span>
             </button>
           </div>
