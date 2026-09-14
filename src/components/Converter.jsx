@@ -421,7 +421,7 @@ export default function Converter({ id }) {
                 Paste
               </button>
               <label className="btn btn-secondary btn-sm file-upload-btn">
-                Upload file
+                Upload .txt/CSV
                 <input
                   ref={fileInputRef}
                   type="file"
