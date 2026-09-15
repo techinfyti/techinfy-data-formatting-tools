@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const SITE_NAME = "TechInfy Data Tools";
 const DEFAULT_DESCRIPTION =
-  "Free online tools to convert, clean and format lists, text, CSV, SQL and JSON data directly in your browser.";
+  "Free online delimiter tool to convert and clean lists, CSV, SQL and JSON data. Switch between comma, pipe, tab and custom delimiters instantly, right in your browser.";
 
 function setMetaTag(attr, key, content) {
   let el = document.head.querySelector(`meta[${attr}="${key}"]`);
@@ -20,7 +20,7 @@ function setMetaTag(attr, key, content) {
  */
 export default function Seo({ title, description = DEFAULT_DESCRIPTION }) {
   useEffect(() => {
-    const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} – Free Online Data Converter`;
+    const fullTitle = title ? `${title} | ${SITE_NAME}` : `Delimiter Tool – Free Online Delimiter Converter | TechInfy`;
     document.title = fullTitle;
 
     setMetaTag("name", "description", description);

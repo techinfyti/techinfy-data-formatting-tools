@@ -26,12 +26,12 @@ export default function Home() {
   return (
     <>
       <Seo
-        title="Free Online Data Converter"
-        description="Free online tools to convert, clean and format lists, text, CSV, SQL and JSON data directly in your browser."
+        title="Delimiter Tool – Free Online Delimiter Converter"
+        description="Free online delimiter tool to convert and clean lists, CSV, SQL and JSON data. Switch between comma, pipe, tab and custom delimiters instantly, right in your browser."
       />
 
       <section className="container home-title">
-        <h1>Free Online Data Formatting Tools</h1>
+        <h1>Free Online Delimiter Tool for Data Formatting</h1>
       </section>
 
       <section id="converter" className="container section section--top">
