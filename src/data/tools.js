@@ -72,6 +72,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "excel-to-json",
+    name: "Excel to JSON Converter",
+    description: "Convert .xlsx or .xls spreadsheets into clean, structured JSON — with multi-sheet support.",
+    icon: "📈",
+    to: "/excel-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",

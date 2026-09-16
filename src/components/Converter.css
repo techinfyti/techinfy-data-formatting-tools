@@ -207,6 +207,27 @@
   color: var(--text-faint);
 }
 
+.panel__status {
+  flex: 1;
+  min-height: 320px;
+  padding: 16px;
+  background: var(--bg-inset);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel__status-placeholder {
+  color: var(--text-faint);
+  font-size: 0.9rem;
+}
+
+.panel__status-filename {
+  font-weight: 600;
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
 .panel__footer {
   display: flex;
   flex-wrap: wrap;

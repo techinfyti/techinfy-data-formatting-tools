@@ -3,6 +3,13 @@ import "./Converter.css";
 import { CSV_MAX_INPUT_LENGTH, csvToJson } from "../utils/csvToJson.js";
 import { xmlToJson } from "../utils/xmlToJson.js";
 import { yamlToJson } from "../utils/yamlToJson.js";
+import { EXCEL_MAX_FILE_SIZE, excelToJson, isLikelySpreadsheet } from "../utils/excelToJson.js";
+
+const EXCEL_SAMPLE_ROWS = [
+  ["name", "role", "city"],
+  ["Ada Lovelace", "Engineer", "London"],
+  ["Grace Hopper", "Admiral", "New York"],
+];
 
 // Registry of supported "From format" options. Each entry is self-contained
 // (sample data, default delimiter, upload hints) so adding a new format later
@@ -53,6 +60,16 @@ export const TO_JSON_FORMATS = [
     uploadLabel: "Upload .yaml/.yml",
     placeholder: "Paste your YAML here…",
   },
+  {
+    id: "excel",
+    label: "Excel",
+    delimiter: null,
+    delimiterSelectable: false,
+    typeInferenceApplicable: false,
+    isBinaryUpload: true,
+    uploadAccept: ".xlsx,.xls,.xlsm",
+    uploadLabel: "Upload .xlsx/.xls",
+  },
 ];
 
 const DELIMITER_OPTIONS = [
@@ -97,7 +114,20 @@ function countLines(text) {
 }
 
 /** Dispatches to the right parser for the active "From format". */
-function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed }) {
+function convertInput({
+  formatId,
+  input,
+  delimiter,
+  hasHeader,
+  inferTypes,
+  indent,
+  yamlLib,
+  yamlLibFailed,
+  excelLib,
+  excelLibFailed,
+  workbook,
+  selectedSheet,
+}) {
   switch (formatId) {
     case "csv":
     case "tsv":
@@ -109,6 +139,11 @@ function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, inden
         return { output: "", error: "Couldn't load YAML support. Check your connection and reload the page." };
       }
       return yamlToJson({ input, yamlLib, indent });
+    case "excel":
+      if (excelLibFailed) {
+        return { output: "", error: "Couldn't load Excel support. Check your connection and reload the page.", rowCount: 0 };
+      }
+      return excelToJson({ xlsxLib: excelLib, workbook, sheetName: selectedSheet, hasHeader, indent });
     default:
       return { output: "", error: "Unsupported format." };
   }
@@ -126,6 +161,12 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   const [toast, showToast] = useToast();
   const [yamlLib, setYamlLib] = useState(null);
   const [yamlLibFailed, setYamlLibFailed] = useState(false);
+  const [excelLib, setExcelLib] = useState(null);
+  const [excelLibFailed, setExcelLibFailed] = useState(false);
+  const [workbook, setWorkbook] = useState(null);
+  const [sheetNames, setSheetNames] = useState([]);
+  const [selectedSheet, setSelectedSheet] = useState("");
+  const [excelFileName, setExcelFileName] = useState("");
   const fileInputRef = useRef(null);
 
   const handleFormatChange = (nextId) => {
@@ -134,6 +175,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     setFormatId(nextId);
     setDelimiter(next.delimiter);
     if (nextId === "yaml") setYamlLibFailed(false);
+    if (nextId === "excel") setExcelLibFailed(false);
   };
 
   // YAML support (js-yaml) is only fetched once a visitor actually picks YAML,
@@ -153,13 +195,44 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     };
   }, [formatId, yamlLib]);
 
+  // Excel support (SheetJS) is only fetched once a visitor actually picks Excel.
+  useEffect(() => {
+    if (formatId !== "excel" || excelLib) return;
+    let cancelled = false;
+    import("xlsx")
+      .then((mod) => {
+        if (!cancelled) setExcelLib(mod);
+      })
+      .catch(() => {
+        if (!cancelled) setExcelLibFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [formatId, excelLib]);
+
   const debouncedInput = useDebouncedValue(input, input.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0);
 
-  const isLoadingFormatLib = formatId === "yaml" && !yamlLib && !yamlLibFailed;
+  const isLoadingFormatLib =
+    (formatId === "yaml" && !yamlLib && !yamlLibFailed) || (formatId === "excel" && !excelLib && !excelLibFailed);
 
   const { output, error, rowCount } = useMemo(
-    () => convertInput({ formatId, input: debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed }),
-    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed]
+    () =>
+      convertInput({
+        formatId,
+        input: debouncedInput,
+        delimiter,
+        hasHeader,
+        inferTypes,
+        indent,
+        yamlLib,
+        yamlLibFailed,
+        excelLib,
+        excelLibFailed,
+        workbook,
+        selectedSheet,
+      }),
+    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed, excelLib, excelLibFailed, workbook, selectedSheet]
   );
 
   const handlePaste = async () => {
@@ -171,8 +244,28 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     }
   };
 
-  const handleClear = () => setInput("");
-  const handleLoadSample = () => setInput(format.sample);
+  const handleClear = () => {
+    setInput("");
+    setWorkbook(null);
+    setSheetNames([]);
+    setSelectedSheet("");
+    setExcelFileName("");
+  };
+
+  const handleLoadSample = () => {
+    if (format.isBinaryUpload) {
+      if (!excelLib) return;
+      const ws = excelLib.utils.aoa_to_sheet(EXCEL_SAMPLE_ROWS);
+      const wb = excelLib.utils.book_new();
+      excelLib.utils.book_append_sheet(wb, ws, "Sheet1");
+      setWorkbook(wb);
+      setSheetNames(wb.SheetNames);
+      setSelectedSheet(wb.SheetNames[0]);
+      setExcelFileName("sample.xlsx");
+      return;
+    }
+    setInput(format.sample);
+  };
 
   const handleCopy = async () => {
     if (!output) {
@@ -238,6 +331,41 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     reader.onerror = () => showToast("Couldn't read that file.");
     reader.readAsText(file);
     e.target.value = "";
+  };
+
+  const handleExcelFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > EXCEL_MAX_FILE_SIZE) {
+      showToast("That file is too large to load.");
+      e.target.value = "";
+      return;
+    }
+    try {
+      const buffer = await file.arrayBuffer();
+      if (!isLikelySpreadsheet(buffer)) {
+        showToast("That doesn't look like a valid Excel file. Please upload a .xlsx or .xls file.");
+        return;
+      }
+      let lib = excelLib;
+      if (!lib) {
+        lib = await import("xlsx");
+        setExcelLib(lib);
+      }
+      const wb = lib.read(buffer, { type: "array" });
+      if (!wb.SheetNames || wb.SheetNames.length === 0) {
+        showToast("That file doesn't have any sheets to read.");
+        return;
+      }
+      setWorkbook(wb);
+      setSheetNames(wb.SheetNames);
+      setSelectedSheet(wb.SheetNames[0]);
+      setExcelFileName(file.name);
+    } catch {
+      showToast("Couldn't read that file. Please upload a valid .xlsx or .xls file.");
+    } finally {
+      e.target.value = "";
+    }
   };
 
   return (
@@ -329,16 +457,18 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
               <button type="button" className="btn btn-secondary btn-sm" onClick={handleLoadSample}>
                 Load sample
               </button>
-              <button type="button" className="btn btn-secondary btn-sm" onClick={handlePaste}>
-                Paste
-              </button>
+              {!format.isBinaryUpload && (
+                <button type="button" className="btn btn-secondary btn-sm" onClick={handlePaste}>
+                  Paste
+                </button>
+              )}
               <label className="btn btn-secondary btn-sm file-upload-btn">
                 {format.uploadLabel}
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept={format.uploadAccept}
-                  onChange={handleFileUpload}
+                  onChange={format.isBinaryUpload ? handleExcelFileUpload : handleFileUpload}
                   className="visually-hidden"
                 />
               </label>
@@ -347,18 +477,53 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
               </button>
             </div>
           </div>
-          <textarea
-            className="panel__textarea"
-            placeholder={format.placeholder}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            spellCheck="false"
-            aria-label="Input data"
-          />
+          {format.isBinaryUpload ? (
+            <div className="panel__status">
+              {workbook ? (
+                <>
+                  <p className="panel__status-filename">📄 {excelFileName}</p>
+                  {sheetNames.length > 1 && (
+                    <div className="settings-group">
+                      <label className="field-label" htmlFor="sheet-select">Sheet</label>
+                      <select
+                        id="sheet-select"
+                        className="select"
+                        value={selectedSheet}
+                        onChange={(e) => setSelectedSheet(e.target.value)}
+                      >
+                        {sheetNames.map((name) => (
+                          <option key={name} value={name}>{name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="panel__status-placeholder">
+                  {isLoadingFormatLib ? "Loading Excel support…" : 'Upload an .xlsx or .xls file, or click "Load sample" above.'}
+                </p>
+              )}
+            </div>
+          ) : (
+            <textarea
+              className="panel__textarea"
+              placeholder={format.placeholder}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              spellCheck="false"
+              aria-label="Input data"
+            />
+          )}
           <div className="panel__footer">
-            <span>{input.length.toLocaleString()} characters</span>
-            <span aria-hidden="true">·</span>
-            <span>{countLines(input).toLocaleString()} lines</span>
+            {format.isBinaryUpload ? (
+              workbook && <span>{sheetNames.length.toLocaleString()} sheet{sheetNames.length !== 1 ? "s" : ""} found</span>
+            ) : (
+              <>
+                <span>{input.length.toLocaleString()} characters</span>
+                <span aria-hidden="true">·</span>
+                <span>{countLines(input).toLocaleString()} lines</span>
+              </>
+            )}
           </div>
         </div>
 
@@ -381,7 +546,11 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
           )}
           <textarea
             className="panel__textarea"
-            placeholder={isLoadingFormatLib ? "Loading YAML support…" : "Converted JSON will appear here automatically…"}
+            placeholder={
+              isLoadingFormatLib
+                ? `Loading ${format.label} support…`
+                : "Converted JSON will appear here automatically…"
+            }
             value={output}
             readOnly
             spellCheck="false"
