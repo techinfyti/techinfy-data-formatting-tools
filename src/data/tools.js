@@ -34,9 +34,9 @@ export const TOOLS = [
   {
     id: "json-formatter",
     name: "JSON Formatter",
-    description: "Turn a plain list into a pretty-printed JSON array using the JSON Array preset.",
+    description: "Validate, pretty-print, minify and sort keys in any JSON document — objects, nested data, anything.",
     icon: "{ }",
-    to: "/#converter",
+    to: "/json-formatter",
     status: "available",
   },
   {

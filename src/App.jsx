@@ -11,6 +11,7 @@ const Tools = lazy(() => import("./pages/Tools.jsx"));
 const About = lazy(() => import("./pages/About.jsx"));
 const Privacy = lazy(() => import("./pages/Privacy.jsx"));
 const Contact = lazy(() => import("./pages/Contact.jsx"));
+const JsonFormatter = lazy(() => import("./pages/JsonFormatter.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
@@ -43,6 +44,7 @@ function Layout() {
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/json-formatter" element={<JsonFormatter />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
