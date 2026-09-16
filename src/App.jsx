@@ -18,6 +18,7 @@ const TsvToJson = lazy(() => import("./pages/TsvToJson.jsx"));
 const XmlToJson = lazy(() => import("./pages/XmlToJson.jsx"));
 const YamlToJson = lazy(() => import("./pages/YamlToJson.jsx"));
 const ExcelToJson = lazy(() => import("./pages/ExcelToJson.jsx"));
+const TextToJson = lazy(() => import("./pages/TextToJson.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
@@ -58,6 +59,7 @@ function Layout() {
               <Route path="/xml-to-json" element={<XmlToJson />} />
               <Route path="/yaml-to-json" element={<YamlToJson />} />
             <Route path="/excel-to-json" element={<ExcelToJson />} />
+            <Route path="/text-to-json" element={<TextToJson />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

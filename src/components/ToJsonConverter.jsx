@@ -4,6 +4,17 @@ import { CSV_MAX_INPUT_LENGTH, csvToJson } from "../utils/csvToJson.js";
 import { xmlToJson } from "../utils/xmlToJson.js";
 import { yamlToJson } from "../utils/yamlToJson.js";
 import { EXCEL_MAX_FILE_SIZE, excelToJson, isLikelySpreadsheet } from "../utils/excelToJson.js";
+import { textToJson } from "../utils/textToJson.js";
+
+const TEXT_SAMPLES = {
+  lines: "Apple\nOrange\nBanana\nMango\nGrape",
+  keyValue: "name: Ada Lovelace\nrole: Engineer\ncity: London",
+};
+
+const TEXT_MODES = [
+  { id: "lines", label: "List (one item per line)" },
+  { id: "keyValue", label: 'Key: value pairs (object)' },
+];
 
 const EXCEL_SAMPLE_ROWS = [
   ["name", "role", "city"],
@@ -70,6 +81,18 @@ export const TO_JSON_FORMATS = [
     uploadAccept: ".xlsx,.xls,.xlsm",
     uploadLabel: "Upload .xlsx/.xls",
   },
+  {
+    id: "text",
+    label: "Plain Text",
+    delimiter: null,
+    delimiterSelectable: false,
+    hasHeaderApplicable: false,
+    hasModeSelect: true,
+    rowCountLabel: "items",
+    uploadAccept: ".txt",
+    uploadLabel: "Upload .txt",
+    placeholder: "Paste your text here, one item per line…",
+  },
 ];
 
 const DELIMITER_OPTIONS = [
@@ -127,6 +150,7 @@ function convertInput({
   excelLibFailed,
   workbook,
   selectedSheet,
+  textMode,
 }) {
   switch (formatId) {
     case "csv":
@@ -144,6 +168,8 @@ function convertInput({
         return { output: "", error: "Couldn't load Excel support. Check your connection and reload the page.", rowCount: 0 };
       }
       return excelToJson({ xlsxLib: excelLib, workbook, sheetName: selectedSheet, hasHeader, indent });
+    case "text":
+      return textToJson({ input, mode: textMode, inferTypes, indent });
     default:
       return { output: "", error: "Unsupported format." };
   }
@@ -167,6 +193,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   const [sheetNames, setSheetNames] = useState([]);
   const [selectedSheet, setSelectedSheet] = useState("");
   const [excelFileName, setExcelFileName] = useState("");
+  const [textMode, setTextMode] = useState("lines");
   const fileInputRef = useRef(null);
 
   const handleFormatChange = (nextId) => {
@@ -231,8 +258,23 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
         excelLibFailed,
         workbook,
         selectedSheet,
+        textMode,
       }),
-    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed, excelLib, excelLibFailed, workbook, selectedSheet]
+    [
+      formatId,
+      debouncedInput,
+      delimiter,
+      hasHeader,
+      inferTypes,
+      indent,
+      yamlLib,
+      yamlLibFailed,
+      excelLib,
+      excelLibFailed,
+      workbook,
+      selectedSheet,
+      textMode,
+    ]
   );
 
   const handlePaste = async () => {
@@ -262,6 +304,10 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
       setSheetNames(wb.SheetNames);
       setSelectedSheet(wb.SheetNames[0]);
       setExcelFileName("sample.xlsx");
+      return;
+    }
+    if (format.hasModeSelect) {
+      setInput(TEXT_SAMPLES[textMode] ?? TEXT_SAMPLES.lines);
       return;
     }
     setInput(format.sample);
@@ -403,6 +449,22 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
               >
                 {DELIMITER_OPTIONS.map((d) => (
                   <option key={d.id} value={d.id}>{d.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {format.hasModeSelect && (
+            <div className="settings-group settings-group--delimiter">
+              <label className="field-label" htmlFor="text-mode-select">Shape</label>
+              <select
+                id="text-mode-select"
+                className="select"
+                value={textMode}
+                onChange={(e) => setTextMode(e.target.value)}
+              >
+                {TEXT_MODES.map((m) => (
+                  <option key={m.id} value={m.id}>{m.label}</option>
                 ))}
               </select>
             </div>
@@ -561,7 +623,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
             {format.showRowCount !== false && rowCount != null && (
               <>
                 <span aria-hidden="true">·</span>
-                <span>{rowCount.toLocaleString()} rows</span>
+                <span>{rowCount.toLocaleString()} {format.rowCountLabel ?? "rows"}</span>
               </>
             )}
           </div>

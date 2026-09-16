@@ -80,6 +80,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "text-to-json",
+    name: "Text to JSON Converter",
+    description: "Convert a plain list or key: value pairs into clean, structured JSON.",
+    icon: "📝",
+    to: "/text-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",
