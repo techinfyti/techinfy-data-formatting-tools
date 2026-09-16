@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import "./Converter.css";
 import { CSV_MAX_INPUT_LENGTH, csvToJson } from "../utils/csvToJson.js";
+import { xmlToJson } from "../utils/xmlToJson.js";
 
 // Registry of supported "From format" options. Each entry is self-contained
 // (sample data, default delimiter, upload hints) so adding a new format later
@@ -25,6 +26,18 @@ export const TO_JSON_FORMATS = [
     uploadAccept: ".tsv,.csv,.txt",
     uploadLabel: "Upload .tsv/.csv",
     placeholder: "Paste your TSV here…",
+  },
+  {
+    id: "xml",
+    label: "XML",
+    sample: '<?xml version="1.0"?>\n<person id="1">\n  <name>Ada Lovelace</name>\n  <role>Engineer</role>\n  <skills>\n    <skill>Mathematics</skill>\n    <skill>Programming</skill>\n  </skills>\n</person>',
+    delimiter: null,
+    delimiterSelectable: false,
+    hasHeaderApplicable: false,
+    showRowCount: false,
+    uploadAccept: ".xml,.txt",
+    uploadLabel: "Upload .xml",
+    placeholder: "Paste your XML here…",
   },
 ];
 
@@ -75,8 +88,10 @@ function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, inden
     case "csv":
     case "tsv":
       return csvToJson({ input, delimiter, hasHeader, inferTypes, indent });
+    case "xml":
+      return xmlToJson({ input, inferTypes, indent });
     default:
-      return { output: "", error: "Unsupported format.", rowCount: 0 };
+      return { output: "", error: "Unsupported format." };
   }
 }
 
@@ -160,7 +175,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
       return;
     }
     if (BINARY_FILE_PATTERN.test(file.name)) {
-      showToast("That's a binary file, not plain text. Please upload a .csv or .tsv file.");
+      showToast("That's a binary file, not plain text. Please upload a text file in a supported format.");
       e.target.value = "";
       return;
     }
@@ -169,12 +184,14 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
       const text = String(reader.result ?? "");
       const suspicious = (text.match(BINARY_CONTENT_PATTERN) || []).length;
       if (text.length > 0 && suspicious / text.length > 0.02) {
-        showToast("That file doesn't look like plain text. Please upload a .csv or .tsv file.");
+        showToast("That file doesn't look like plain text. Please upload a text file in a supported format.");
         return;
       }
       setInput(text);
-      if (file.name.toLowerCase().endsWith(".tsv")) handleFormatChange("tsv");
-      else if (file.name.toLowerCase().endsWith(".csv")) handleFormatChange("csv");
+      const lowerName = file.name.toLowerCase();
+      if (lowerName.endsWith(".tsv")) handleFormatChange("tsv");
+      else if (lowerName.endsWith(".csv")) handleFormatChange("csv");
+      else if (lowerName.endsWith(".xml")) handleFormatChange("xml");
     };
     reader.onerror = () => showToast("Couldn't read that file.");
     reader.readAsText(file);
@@ -238,14 +255,16 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
 
         <div className="formatting-options">
           <div className="formatting-options__grid">
-            <label className="checkbox-row">
-              <input
-                type="checkbox"
-                checked={hasHeader}
-                onChange={(e) => setHasHeader(e.target.checked)}
-              />
-              First row is a header
-            </label>
+            {format.hasHeaderApplicable !== false && (
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={hasHeader}
+                  onChange={(e) => setHasHeader(e.target.checked)}
+                />
+                First row is a header
+              </label>
+            )}
             <label className="checkbox-row">
               <input
                 type="checkbox"
@@ -326,8 +345,12 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
           />
           <div className="panel__footer">
             <span>{output.length.toLocaleString()} characters</span>
-            <span aria-hidden="true">·</span>
-            <span>{rowCount.toLocaleString()} rows</span>
+            {format.showRowCount !== false && rowCount != null && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{rowCount.toLocaleString()} rows</span>
+              </>
+            )}
           </div>
         </div>
       </div>

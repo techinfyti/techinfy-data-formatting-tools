@@ -56,6 +56,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "xml-to-json",
+    name: "XML to JSON Converter",
+    description: "Convert XML documents into clean, structured JSON — attributes, nested elements and repeated tags included.",
+    icon: "📰",
+    to: "/xml-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",
