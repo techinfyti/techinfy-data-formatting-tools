@@ -54,6 +54,16 @@ const FAQS = [
     answer:
       "Yes — under Quick presets you'll find one-click options for a SQL IN clause, a SQL values list, a JSON array, a JavaScript array, CSV, and a quoted list.",
   },
+  {
+    question: "Do you have a JSON formatter and validator?",
+    answer:
+      "Yes — our free JSON Formatter lets you pretty-print, minify, validate and sort the keys of any JSON document, with clear error messages (including the line and column) if something's invalid. It runs entirely in your browser, just like every other tool here.",
+  },
+  {
+    question: "Can I convert CSV, XML, YAML or Excel files to JSON?",
+    answer:
+      "Yes. We have dedicated converters for CSV, TSV, XML, YAML, Excel (.xlsx/.xls), and plain text — each turns your data into clean, structured JSON instantly, with options like header detection, sheet selection for multi-sheet Excel files, and automatic number/boolean conversion where relevant.",
+  },
 ];
 
 export default function Home() {
