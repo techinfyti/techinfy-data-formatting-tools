@@ -4,6 +4,7 @@
   <url><loc>https://delimitertool.com/tools</loc><priority>0.8</priority></url>
   <url><loc>https://delimitertool.com/json-formatter</loc><priority>0.7</priority></url>
   <url><loc>https://delimitertool.com/csv-to-json</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/tsv-to-json</loc><priority>0.7</priority></url>
   <url><loc>https://delimitertool.com/about</loc><priority>0.5</priority></url>
   <url><loc>https://delimitertool.com/privacy</loc><priority>0.3</priority></url>
   <url><loc>https://delimitertool.com/contact</loc><priority>0.4</priority></url>

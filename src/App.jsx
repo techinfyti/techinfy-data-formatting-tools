@@ -13,6 +13,7 @@ const Privacy = lazy(() => import("./pages/Privacy.jsx"));
 const Contact = lazy(() => import("./pages/Contact.jsx"));
 const JsonFormatter = lazy(() => import("./pages/JsonFormatter.jsx"));
 const CsvToJson = lazy(() => import("./pages/CsvToJson.jsx"));
+const TsvToJson = lazy(() => import("./pages/TsvToJson.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
@@ -47,6 +48,7 @@ function Layout() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/json-formatter" element={<JsonFormatter />} />
             <Route path="/csv-to-json" element={<CsvToJson />} />
+            <Route path="/tsv-to-json" element={<TsvToJson />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

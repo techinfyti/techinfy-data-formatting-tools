@@ -48,6 +48,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "tsv-to-json",
+    name: "TSV to JSON Converter",
+    description: "Convert tab-separated (TSV) data into clean, structured JSON — with header detection and type conversion.",
+    icon: "📋",
+    to: "/tsv-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",
