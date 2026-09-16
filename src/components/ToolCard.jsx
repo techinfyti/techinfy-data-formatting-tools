@@ -6,7 +6,7 @@ export default function ToolCard({ tool }) {
 
   const content = (
     <>
-      <div className="tool-card__icon" aria-hidden="true">{tool.icon}</div>
+      <div className={"tool-card__icon tool-card__icon--" + (tool.color ?? "blue")} aria-hidden="true">{tool.icon}</div>
       <h3 className="tool-card__name">{tool.name}</h3>
       <p className="tool-card__description">{tool.description}</p>
       <span className={"badge" + (isAvailable ? "" : " badge--muted")}>
