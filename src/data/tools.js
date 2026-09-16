@@ -64,6 +64,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "yaml-to-json",
+    name: "YAML to JSON Converter",
+    description: "Convert YAML config files, Kubernetes manifests and Docker Compose files into clean, structured JSON.",
+    icon: "⚙️",
+    to: "/yaml-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",

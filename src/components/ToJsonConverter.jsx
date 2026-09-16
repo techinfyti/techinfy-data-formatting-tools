@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import "./Converter.css";
 import { CSV_MAX_INPUT_LENGTH, csvToJson } from "../utils/csvToJson.js";
 import { xmlToJson } from "../utils/xmlToJson.js";
+import { yamlToJson } from "../utils/yamlToJson.js";
 
 // Registry of supported "From format" options. Each entry is self-contained
 // (sample data, default delimiter, upload hints) so adding a new format later
@@ -38,6 +39,19 @@ export const TO_JSON_FORMATS = [
     uploadAccept: ".xml,.txt",
     uploadLabel: "Upload .xml",
     placeholder: "Paste your XML here…",
+  },
+  {
+    id: "yaml",
+    label: "YAML",
+    sample: 'name: Ada Lovelace\nrole: Engineer\nactive: true\nskills:\n  - Mathematics\n  - Programming\naddress:\n  city: London\n  zip: "SW1A"',
+    delimiter: null,
+    delimiterSelectable: false,
+    hasHeaderApplicable: false,
+    showRowCount: false,
+    typeInferenceApplicable: false,
+    uploadAccept: ".yaml,.yml,.txt",
+    uploadLabel: "Upload .yaml/.yml",
+    placeholder: "Paste your YAML here…",
   },
 ];
 
@@ -83,13 +97,15 @@ function countLines(text) {
 }
 
 /** Dispatches to the right parser for the active "From format". */
-function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, indent }) {
+function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, indent, yamlLib }) {
   switch (formatId) {
     case "csv":
     case "tsv":
       return csvToJson({ input, delimiter, hasHeader, inferTypes, indent });
     case "xml":
       return xmlToJson({ input, inferTypes, indent });
+    case "yaml":
+      return yamlToJson({ input, yamlLib, indent });
     default:
       return { output: "", error: "Unsupported format." };
   }
@@ -105,6 +121,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   const [hasHeader, setHasHeader] = useState(true);
   const [inferTypes, setInferTypes] = useState(false);
   const [toast, showToast] = useToast();
+  const [yamlLib, setYamlLib] = useState(null);
   const fileInputRef = useRef(null);
 
   const handleFormatChange = (nextId) => {
@@ -114,11 +131,26 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     setDelimiter(next.delimiter);
   };
 
+  // YAML support (js-yaml) is only fetched once a visitor actually picks YAML,
+  // so CSV/TSV/XML visitors never download it.
+  useEffect(() => {
+    if (formatId !== "yaml" || yamlLib) return;
+    let cancelled = false;
+    import("js-yaml").then((mod) => {
+      if (!cancelled) setYamlLib(mod);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [formatId, yamlLib]);
+
   const debouncedInput = useDebouncedValue(input, input.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0);
 
+  const isLoadingFormatLib = formatId === "yaml" && !yamlLib;
+
   const { output, error, rowCount } = useMemo(
-    () => convertInput({ formatId, input: debouncedInput, delimiter, hasHeader, inferTypes, indent }),
-    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent]
+    () => convertInput({ formatId, input: debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib }),
+    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib]
   );
 
   const handlePaste = async () => {
@@ -192,6 +224,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
       if (lowerName.endsWith(".tsv")) handleFormatChange("tsv");
       else if (lowerName.endsWith(".csv")) handleFormatChange("csv");
       else if (lowerName.endsWith(".xml")) handleFormatChange("xml");
+      else if (lowerName.endsWith(".yaml") || lowerName.endsWith(".yml")) handleFormatChange("yaml");
     };
     reader.onerror = () => showToast("Couldn't read that file.");
     reader.readAsText(file);
@@ -265,14 +298,16 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
                 First row is a header
               </label>
             )}
-            <label className="checkbox-row">
-              <input
-                type="checkbox"
-                checked={inferTypes}
-                onChange={(e) => setInferTypes(e.target.checked)}
-              />
-              Convert numbers &amp; booleans automatically
-            </label>
+            {format.typeInferenceApplicable !== false && (
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={inferTypes}
+                  onChange={(e) => setInferTypes(e.target.checked)}
+                />
+                Convert numbers &amp; booleans automatically
+              </label>
+            )}
           </div>
         </div>
       </div>
@@ -337,7 +372,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
           )}
           <textarea
             className="panel__textarea"
-            placeholder="Converted JSON will appear here automatically…"
+            placeholder={isLoadingFormatLib ? "Loading YAML support…" : "Converted JSON will appear here automatically…"}
             value={output}
             readOnly
             spellCheck="false"
