@@ -40,6 +40,14 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "csv-to-json",
+    name: "CSV to JSON Converter",
+    description: "Convert CSV or TSV data into clean, structured JSON — with header detection and type conversion.",
+    icon: "📑",
+    to: "/csv-to-json",
+    status: "available",
+  },
+  {
     id: "sql-formatter",
     name: "SQL Formatter",
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",

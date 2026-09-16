@@ -2,13 +2,16 @@ import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import Seo from "../components/Seo.jsx";
 import "../components/Converter.css";
 import "./pages.css";
-import { JSON_MAX_INPUT_LENGTH, processJson } from "../utils/jsonFormatter.js";
+import { CSV_MAX_INPUT_LENGTH, csvToJson } from "../utils/csvToJson.js";
 
-const SAMPLE_INPUT = JSON.stringify(
-  { name: "Techinfy", tools: ["Delimiter Converter", "JSON Formatter"], free: true, rating: null },
-  null,
-  0
-);
+const SAMPLE_INPUT = 'name,role,city\nAda Lovelace,Engineer,London\nGrace Hopper,Admiral,New York\n"Smith, John",Analyst,Boston';
+
+const DELIMITER_OPTIONS = [
+  { id: ",", label: "Comma ( , )" },
+  { id: ";", label: "Semicolon ( ; )" },
+  { id: "\t", label: "Tab" },
+  { id: "|", label: "Pipe ( | )" },
+];
 
 const BINARY_FILE_PATTERN = /\.(xlsx|xls|docx|doc|pdf|pptx|ppt|zip|rar|7z|png|jpe?g|gif|bmp|exe|bin)$/i;
 // eslint-disable-next-line no-control-regex -- intentional: detecting binary content
@@ -44,19 +47,20 @@ function countLines(text) {
   return text.split(/\r\n|\r|\n/).filter((l) => l !== "").length;
 }
 
-export default function JsonFormatter() {
+export default function CsvToJson() {
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState("format");
+  const [delimiter, setDelimiter] = useState(",");
   const [indent, setIndent] = useState(2);
-  const [sortKeys, setSortKeys] = useState(false);
+  const [hasHeader, setHasHeader] = useState(true);
+  const [inferTypes, setInferTypes] = useState(false);
   const [toast, showToast] = useToast();
   const fileInputRef = useRef(null);
 
   const debouncedInput = useDebouncedValue(input, input.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0);
 
-  const { output, error } = useMemo(
-    () => processJson({ input: debouncedInput, mode, indent, sortKeys }),
-    [debouncedInput, mode, indent, sortKeys]
+  const { output, error, rowCount } = useMemo(
+    () => csvToJson({ input: debouncedInput, delimiter, hasHeader, inferTypes, indent }),
+    [debouncedInput, delimiter, hasHeader, inferTypes, indent]
   );
 
   const handlePaste = async () => {
@@ -107,13 +111,13 @@ export default function JsonFormatter() {
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > JSON_MAX_INPUT_LENGTH * 2) {
+    if (file.size > CSV_MAX_INPUT_LENGTH * 2) {
       showToast("That file is too large to load.");
       e.target.value = "";
       return;
     }
     if (BINARY_FILE_PATTERN.test(file.name)) {
-      showToast("That's a binary file, not plain text. Please upload a .json or .txt file.");
+      showToast("That's a binary file, not plain text. Please upload a .csv or .tsv file.");
       e.target.value = "";
       return;
     }
@@ -122,10 +126,11 @@ export default function JsonFormatter() {
       const text = String(reader.result ?? "");
       const suspicious = (text.match(BINARY_CONTENT_PATTERN) || []).length;
       if (text.length > 0 && suspicious / text.length > 0.02) {
-        showToast("That file doesn't look like plain text. Please upload a .json or .txt file.");
+        showToast("That file doesn't look like plain text. Please upload a .csv or .tsv file.");
         return;
       }
       setInput(text);
+      if (file.name.toLowerCase().endsWith(".tsv")) setDelimiter("\t");
     };
     reader.onerror = () => showToast("Couldn't read that file.");
     reader.readAsText(file);
@@ -135,15 +140,15 @@ export default function JsonFormatter() {
   return (
     <>
       <Seo
-        title="JSON Formatter – Validate, Pretty-Print & Minify JSON"
-        description="Free online JSON formatter. Validate, pretty-print, minify and sort keys in any JSON document, directly in your browser — no data ever leaves your device."
+        title="CSV to JSON Converter – Free Online CSV Converter"
+        description="Free online CSV to JSON converter. Turn any CSV or TSV file into clean, structured JSON instantly, directly in your browser — no data ever leaves your device."
       />
 
       <header className="page-hero">
         <div className="container">
           <span className="page-hero__eyebrow">Tools</span>
-          <h1>JSON Formatter</h1>
-          <p>Paste any JSON to validate it, pretty-print it, minify it, or sort its keys — instantly, in your browser.</p>
+          <h1>CSV to JSON Converter</h1>
+          <p>Paste or upload a CSV file to convert it into structured JSON — instantly, in your browser.</p>
         </div>
       </header>
 
@@ -157,56 +162,54 @@ export default function JsonFormatter() {
 
           <div className="converter__settings card">
             <div className="settings-row">
-              <div className="settings-group">
-                <span className="field-label">Mode</span>
-                <div className="segmented" role="radiogroup" aria-label="Formatting mode">
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={mode === "format"}
-                    className={"segmented__btn" + (mode === "format" ? " is-active" : "")}
-                    onClick={() => setMode("format")}
-                  >
-                    Pretty-print
-                  </button>
-                  <button
-                    type="button"
-                    role="radio"
-                    aria-checked={mode === "minify"}
-                    className={"segmented__btn" + (mode === "minify" ? " is-active" : "")}
-                    onClick={() => setMode("minify")}
-                  >
-                    Minify
-                  </button>
-                </div>
+              <div className="settings-group settings-group--delimiter">
+                <label className="field-label" htmlFor="delimiter-select">Delimiter</label>
+                <select
+                  id="delimiter-select"
+                  className="select"
+                  value={delimiter}
+                  onChange={(e) => setDelimiter(e.target.value)}
+                >
+                  {DELIMITER_OPTIONS.map((d) => (
+                    <option key={d.id} value={d.id}>{d.label}</option>
+                  ))}
+                </select>
               </div>
 
-              {mode === "format" && (
-                <div className="settings-group">
-                  <label className="field-label" htmlFor="indent-select">Indent</label>
-                  <select
-                    id="indent-select"
-                    className="select"
-                    value={indent}
-                    onChange={(e) => setIndent(e.target.value === "tab" ? "tab" : Number(e.target.value))}
-                  >
-                    <option value={2}>2 spaces</option>
-                    <option value={4}>4 spaces</option>
-                    <option value="tab">Tab</option>
-                  </select>
-                </div>
-              )}
+              <div className="settings-group">
+                <label className="field-label" htmlFor="indent-select">Indent</label>
+                <select
+                  id="indent-select"
+                  className="select"
+                  value={indent}
+                  onChange={(e) => setIndent(e.target.value === "tab" ? "tab" : Number(e.target.value))}
+                >
+                  <option value={2}>2 spaces</option>
+                  <option value={4}>4 spaces</option>
+                  <option value="tab">Tab</option>
+                </select>
+              </div>
             </div>
 
             <div className="formatting-options">
-              <label className="checkbox-row">
-                <input
-                  type="checkbox"
-                  checked={sortKeys}
-                  onChange={(e) => setSortKeys(e.target.checked)}
-                />
-                Sort keys alphabetically
-              </label>
+              <div className="formatting-options__grid">
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={hasHeader}
+                    onChange={(e) => setHasHeader(e.target.checked)}
+                  />
+                  First row is a header
+                </label>
+                <label className="checkbox-row">
+                  <input
+                    type="checkbox"
+                    checked={inferTypes}
+                    onChange={(e) => setInferTypes(e.target.checked)}
+                  />
+                  Convert numbers &amp; booleans automatically
+                </label>
+              </div>
             </div>
           </div>
 
@@ -222,11 +225,11 @@ export default function JsonFormatter() {
                     Paste
                   </button>
                   <label className="btn btn-secondary btn-sm file-upload-btn">
-                    Upload .json
+                    Upload .csv/.tsv
                     <input
                       ref={fileInputRef}
                       type="file"
-                      accept=".json,.txt"
+                      accept=".csv,.tsv,.txt"
                       onChange={handleFileUpload}
                       className="visually-hidden"
                     />
@@ -238,7 +241,7 @@ export default function JsonFormatter() {
               </div>
               <textarea
                 className="panel__textarea"
-                placeholder="Paste your JSON here…"
+                placeholder="Paste your CSV here…"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 spellCheck="false"
@@ -270,7 +273,7 @@ export default function JsonFormatter() {
               )}
               <textarea
                 className="panel__textarea"
-                placeholder="Formatted JSON will appear here automatically…"
+                placeholder="Converted JSON will appear here automatically…"
                 value={output}
                 readOnly
                 spellCheck="false"
@@ -278,6 +281,8 @@ export default function JsonFormatter() {
               />
               <div className="panel__footer">
                 <span>{output.length.toLocaleString()} characters</span>
+                <span aria-hidden="true">·</span>
+                <span>{rowCount.toLocaleString()} rows</span>
               </div>
             </div>
           </div>
