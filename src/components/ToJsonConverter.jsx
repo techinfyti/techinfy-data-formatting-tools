@@ -97,7 +97,7 @@ function countLines(text) {
 }
 
 /** Dispatches to the right parser for the active "From format". */
-function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, indent, yamlLib }) {
+function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed }) {
   switch (formatId) {
     case "csv":
     case "tsv":
@@ -105,6 +105,9 @@ function convertInput({ formatId, input, delimiter, hasHeader, inferTypes, inden
     case "xml":
       return xmlToJson({ input, inferTypes, indent });
     case "yaml":
+      if (yamlLibFailed) {
+        return { output: "", error: "Couldn't load YAML support. Check your connection and reload the page." };
+      }
       return yamlToJson({ input, yamlLib, indent });
     default:
       return { output: "", error: "Unsupported format." };
@@ -122,6 +125,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   const [inferTypes, setInferTypes] = useState(false);
   const [toast, showToast] = useToast();
   const [yamlLib, setYamlLib] = useState(null);
+  const [yamlLibFailed, setYamlLibFailed] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleFormatChange = (nextId) => {
@@ -129,6 +133,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     if (!next) return;
     setFormatId(nextId);
     setDelimiter(next.delimiter);
+    if (nextId === "yaml") setYamlLibFailed(false);
   };
 
   // YAML support (js-yaml) is only fetched once a visitor actually picks YAML,
@@ -136,9 +141,13 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   useEffect(() => {
     if (formatId !== "yaml" || yamlLib) return;
     let cancelled = false;
-    import("js-yaml").then((mod) => {
-      if (!cancelled) setYamlLib(mod);
-    });
+    import("js-yaml")
+      .then((mod) => {
+        if (!cancelled) setYamlLib(mod);
+      })
+      .catch(() => {
+        if (!cancelled) setYamlLibFailed(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -146,11 +155,11 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
 
   const debouncedInput = useDebouncedValue(input, input.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0);
 
-  const isLoadingFormatLib = formatId === "yaml" && !yamlLib;
+  const isLoadingFormatLib = formatId === "yaml" && !yamlLib && !yamlLibFailed;
 
   const { output, error, rowCount } = useMemo(
-    () => convertInput({ formatId, input: debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib }),
-    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib]
+    () => convertInput({ formatId, input: debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed }),
+    [formatId, debouncedInput, delimiter, hasHeader, inferTypes, indent, yamlLib, yamlLibFailed]
   );
 
   const handlePaste = async () => {

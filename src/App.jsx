@@ -3,6 +3,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import Home from "./pages/Home.jsx";
 
 // Lazy-loaded: only Home (the most common landing page, with the main
@@ -36,26 +37,29 @@ function ScrollToTop() {
 }
 
 function Layout() {
+  const { pathname } = useLocation();
   return (
     <>
       <a href="#main-content" className="skip-link">Skip to main content</a>
       <Header />
       <main id="main-content" style={{ flex: 1 }}>
-        <Suspense fallback={null}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/json-formatter" element={<JsonFormatter />} />
-            <Route path="/csv-to-json" element={<CsvToJson />} />
-            <Route path="/tsv-to-json" element={<TsvToJson />} />
-            <Route path="/xml-to-json" element={<XmlToJson />} />
-            <Route path="/yaml-to-json" element={<YamlToJson />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary key={pathname}>
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/json-formatter" element={<JsonFormatter />} />
+              <Route path="/csv-to-json" element={<CsvToJson />} />
+              <Route path="/tsv-to-json" element={<TsvToJson />} />
+              <Route path="/xml-to-json" element={<XmlToJson />} />
+              <Route path="/yaml-to-json" element={<YamlToJson />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </main>
       <Footer />
     </>
