@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import Seo from "../components/Seo.jsx";
 import "../components/Converter.css";
 import "./pages.css";
+import "./JsonFormatter.css";
 import { JSON_MAX_INPUT_LENGTH, processJson } from "../utils/jsonFormatter.js";
 
 const SAMPLE_INPUT = JSON.stringify(
@@ -263,6 +264,11 @@ export default function JsonFormatter() {
                   </button>
                 </div>
               </div>
+              {error && (
+                <div className="jf__error-banner" role="alert">
+                  <span aria-hidden="true">⚠️</span> {error}
+                </div>
+              )}
               <textarea
                 className="panel__textarea"
                 placeholder="Formatted JSON will appear here automatically…"
@@ -273,11 +279,6 @@ export default function JsonFormatter() {
               />
               <div className="panel__footer">
                 <span>{output.length.toLocaleString()} characters</span>
-                {error && (
-                  <span className="panel__error" role="alert">
-                    {error}
-                  </span>
-                )}
               </div>
             </div>
           </div>
