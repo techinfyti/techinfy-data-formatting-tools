@@ -39,19 +39,19 @@
   --logo-gradient: linear-gradient(135deg, #0561b0 0%, #02c9e8 50%, #1ed398 100%);
   --heading-color: #1c6dd6;
 
-  --tool-blue: #e0edff;
-  --tool-cyan: #e0f7f7;
-  --tool-emerald: #e2f8ec;
-  --tool-amber: #fef3d6;
-  --tool-violet: #f1e8ff;
-  --tool-orange: #ffe9d6;
-  --tool-rose: #ffe4ec;
-  --tool-red: #ffe1de;
-  --tool-indigo: #e6e9ff;
-  --tool-green: #e3f5d8;
-  --tool-slate: #e7ebf0;
-  --tool-fuchsia: #fbe4ff;
-  --tool-sky: #e0f3ff;
+  --tool-blue: #dae7f3;
+  --tool-azure: #d9edf6;
+  --tool-cyan: #d9f2f9;
+  --tool-teal: #d9f7fc;
+  --tool-jade: #daf7f8;
+  --tool-emerald: #dcf8f4;
+  --tool-green: #ddf8f0;
+  --tool-blue-deep: #b4d0e7;
+  --tool-cyan-deep: #b3e4f3;
+  --tool-jade-deep: #b6f0f0;
+  --tool-azure-deep: #b4daed;
+  --tool-teal-deep: #b3eff8;
+  --tool-emerald-deep: #b9f1e8;
 
   color-scheme: light;
 }
@@ -87,19 +87,19 @@
   --surface-brand: var(--bg-elevated);
   --heading-color: #5b9dff;
 
-  --tool-blue: #16233f;
-  --tool-cyan: #0f2a2a;
-  --tool-emerald: #103524;
-  --tool-amber: #3a2a08;
-  --tool-violet: #271b47;
-  --tool-orange: #3a230f;
-  --tool-rose: #3a1723;
-  --tool-red: #3a1512;
-  --tool-indigo: #1f2247;
-  --tool-green: #1c3312;
-  --tool-slate: #1c222e;
-  --tool-fuchsia: #351a3a;
-  --tool-sky: #102a3a;
+  --tool-blue: #072440;
+  --tool-azure: #072e46;
+  --tool-cyan: #07394b;
+  --tool-teal: #064351;
+  --tool-jade: #094449;
+  --tool-emerald: #0c4541;
+  --tool-green: #0f4639;
+  --tool-blue-deep: #073158;
+  --tool-cyan-deep: #065069;
+  --tool-jade-deep: #0a6165;
+  --tool-azure-deep: #064160;
+  --tool-teal-deep: #056071;
+  --tool-emerald-deep: #0e6359;
 
   color-scheme: dark;
 }

@@ -36,18 +36,18 @@
 }
 
 .tool-card--blue { background: var(--tool-blue); }
+.tool-card--azure { background: var(--tool-azure); }
 .tool-card--cyan { background: var(--tool-cyan); }
+.tool-card--teal { background: var(--tool-teal); }
+.tool-card--jade { background: var(--tool-jade); }
 .tool-card--emerald { background: var(--tool-emerald); }
-.tool-card--amber { background: var(--tool-amber); }
-.tool-card--violet { background: var(--tool-violet); }
-.tool-card--orange { background: var(--tool-orange); }
-.tool-card--rose { background: var(--tool-rose); }
-.tool-card--red { background: var(--tool-red); }
-.tool-card--indigo { background: var(--tool-indigo); }
 .tool-card--green { background: var(--tool-green); }
-.tool-card--slate { background: var(--tool-slate); }
-.tool-card--fuchsia { background: var(--tool-fuchsia); }
-.tool-card--sky { background: var(--tool-sky); }
+.tool-card--blue-deep { background: var(--tool-blue-deep); }
+.tool-card--cyan-deep { background: var(--tool-cyan-deep); }
+.tool-card--jade-deep { background: var(--tool-jade-deep); }
+.tool-card--azure-deep { background: var(--tool-azure-deep); }
+.tool-card--teal-deep { background: var(--tool-teal-deep); }
+.tool-card--emerald-deep { background: var(--tool-emerald-deep); }
 
 .tool-card .badge {
   background: var(--bg-elevated);
