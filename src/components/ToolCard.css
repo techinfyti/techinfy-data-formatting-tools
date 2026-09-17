@@ -35,19 +35,19 @@
   box-shadow: var(--shadow-sm);
 }
 
-.tool-card--blue { background: var(--tool-blue); }
-.tool-card--azure { background: var(--tool-azure); }
-.tool-card--cyan { background: var(--tool-cyan); }
-.tool-card--teal { background: var(--tool-teal); }
-.tool-card--jade { background: var(--tool-jade); }
-.tool-card--emerald { background: var(--tool-emerald); }
-.tool-card--green { background: var(--tool-green); }
-.tool-card--blue-deep { background: var(--tool-blue-deep); }
-.tool-card--cyan-deep { background: var(--tool-cyan-deep); }
-.tool-card--jade-deep { background: var(--tool-jade-deep); }
-.tool-card--azure-deep { background: var(--tool-azure-deep); }
-.tool-card--teal-deep { background: var(--tool-teal-deep); }
-.tool-card--emerald-deep { background: var(--tool-emerald-deep); }
+.tool-card--blue { background: linear-gradient(135deg, var(--tool-blue-from) 0%, var(--tool-blue-to) 100%); }
+.tool-card--azure { background: linear-gradient(135deg, var(--tool-azure-from) 0%, var(--tool-azure-to) 100%); }
+.tool-card--cyan { background: linear-gradient(135deg, var(--tool-cyan-from) 0%, var(--tool-cyan-to) 100%); }
+.tool-card--teal { background: linear-gradient(135deg, var(--tool-teal-from) 0%, var(--tool-teal-to) 100%); }
+.tool-card--jade { background: linear-gradient(135deg, var(--tool-jade-from) 0%, var(--tool-jade-to) 100%); }
+.tool-card--emerald { background: linear-gradient(135deg, var(--tool-emerald-from) 0%, var(--tool-emerald-to) 100%); }
+.tool-card--green { background: linear-gradient(135deg, var(--tool-green-from) 0%, var(--tool-green-to) 100%); }
+.tool-card--spring { background: linear-gradient(135deg, var(--tool-spring-from) 0%, var(--tool-spring-to) 100%); }
+.tool-card--mint { background: linear-gradient(135deg, var(--tool-mint-from) 0%, var(--tool-mint-to) 100%); }
+.tool-card--aqua { background: linear-gradient(135deg, var(--tool-aqua-from) 0%, var(--tool-aqua-to) 100%); }
+.tool-card--seafoam { background: linear-gradient(135deg, var(--tool-seafoam-from) 0%, var(--tool-seafoam-to) 100%); }
+.tool-card--lagoon { background: linear-gradient(135deg, var(--tool-lagoon-from) 0%, var(--tool-lagoon-to) 100%); }
+.tool-card--viridian { background: linear-gradient(135deg, var(--tool-viridian-from) 0%, var(--tool-viridian-to) 100%); }
 
 .tool-card .badge {
   background: var(--bg-elevated);
