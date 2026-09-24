@@ -3,7 +3,7 @@
 
 // See converter.js's MAX_INPUT_LENGTH for the reasoning behind this value:
 // large controlled-textarea reflows measurably freeze the browser tab.
-export const XML_MAX_INPUT_LENGTH = 150_000;
+export const XML_MAX_INPUT_LENGTH = 75_000;
 
 function coerce(value) {
   if (value === "") return null;

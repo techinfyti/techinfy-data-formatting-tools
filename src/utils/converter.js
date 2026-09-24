@@ -10,17 +10,16 @@ export const DELIMITER_PRESETS = [
   { id: "newline", label: "New Line", value: "\n" },
 ];
 
-// Measured directly, twice. First: a single controlled-textarea reflow
-// scales roughly linearly with content size (100,000 lines/~640k chars took
-// ~2s for one textarea; this page has two). Second, and more important:
-// rapid back-to-back updates (e.g. pasting several times in quick
-// succession) each reflow again with no gap to breathe, so even individually
-// "safe" updates compound — a real burst growing to ~288,000 chars measured
-// over 9 seconds of cumulative main-thread time even with updates throttled
-// (see setInputGuarded), while the same burst capped at 150,000 chars
-// measured under 3 seconds. 150,000 keeps a solid margin under that curve
-// while still comfortably fitting realistic pasted data.
-export const MAX_INPUT_LENGTH = 150_000;
+// Measured directly, twice, and still hit a real freeze at 150,000 on
+// slower hardware than the one this was benchmarked on: a single reflow
+// scales with content size, and — critically — a real native browser paste
+// reflows the DOM immediately, before React (or any JS-level throttle) ever
+// runs; throttling only removes React's own *extra* re-render on top of
+// that, not the unavoidable native one. Repeated real pastes each pay that
+// native cost, and it compounds. 75,000 stays well clear of the point where
+// that's been observed to freeze a real tab, while still leaving headroom
+// above realistic single-paste data.
+export const MAX_INPUT_LENGTH = 75_000;
 
 /**
  * Resolve the active delimiter string from the UI state.

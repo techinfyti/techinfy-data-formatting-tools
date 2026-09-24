@@ -22,7 +22,7 @@ function getLineNumbers(text) {
  * The box stays a fixed height and scrolls internally for large pastes
  * (matching delim.co's own input box) rather than growing the page.
  */
-export default function LineNumberedTextarea({ value, onChange, placeholder, readOnly, ariaLabel }) {
+export default function LineNumberedTextarea({ value, onChange, placeholder, readOnly, ariaLabel, maxLength, onExceedsMaxLength }) {
   const gutterRef = useRef(null);
   const textareaRef = useRef(null);
   const delay = value.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0;
@@ -54,6 +54,19 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
     }
   };
 
+  // A native paste reflows the DOM the instant the browser inserts it —
+  // before React's onChange (or any JS-level guard/throttle) ever runs.
+  // Blocking it here, before insertion, is the only way to avoid paying
+  // that reflow cost at all for a paste that would be rejected anyway.
+  const handlePasteCapture = (e) => {
+    if (maxLength == null) return;
+    const pasted = e.clipboardData?.getData("text") ?? "";
+    if (value.length + pasted.length > maxLength) {
+      e.preventDefault();
+      onExceedsMaxLength?.();
+    }
+  };
+
   return (
     <div className="line-numbered">
       <div className="line-numbered__gutter" ref={gutterRef} aria-hidden="true">
@@ -66,6 +79,7 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
         value={value}
         onChange={onChange}
         onScroll={handleScroll}
+        onPaste={handlePasteCapture}
         readOnly={readOnly}
         spellCheck="false"
         aria-label={ariaLabel}

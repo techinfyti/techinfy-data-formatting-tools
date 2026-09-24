@@ -69,7 +69,7 @@ const DEBOUNCE_DELAY = 200;
 // multi-second "Page Unresponsive" freeze well under the size limit.
 // Throttling large updates to one per interval coalesces bursts into a
 // single reflow instead of stacking many.
-const THROTTLE_INTERVAL = 200;
+const THROTTLE_INTERVAL = 400;
 
 function useDebouncedValue(value, delay) {
   const [debounced, setDebounced] = useState(value);
@@ -489,6 +489,8 @@ export default function Converter({ id }) {
             value={input}
             onChange={(e) => setInputGuarded(e.target.value)}
             ariaLabel="Input data"
+            maxLength={MAX_INPUT_LENGTH}
+            onExceedsMaxLength={() => showToast(`That's too much text to paste at once (over ${MAX_INPUT_LENGTH.toLocaleString()} characters). Please use a smaller amount.`)}
           />
           <div className="panel__footer">
             <span>{input.length.toLocaleString()} characters</span>
