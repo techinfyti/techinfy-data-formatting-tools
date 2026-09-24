@@ -2,7 +2,9 @@
 // loads dynamically (see ToJsonConverter) so it only ships to the browser
 // when a visitor actually picks YAML as the source format.
 
-export const YAML_MAX_INPUT_LENGTH = 2_000_000;
+// See converter.js's MAX_INPUT_LENGTH for why this is 100,000, not millions:
+// large controlled-textarea reflows measurably freeze the browser tab.
+export const YAML_MAX_INPUT_LENGTH = 100_000;
 
 /** Turn js-yaml's YAMLException into a friendlier, line/column-aware message. */
 function friendlyYamlError(err) {

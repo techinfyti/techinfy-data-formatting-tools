@@ -118,10 +118,22 @@ export default function Converter({ id }) {
     setOptions((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Rejecting an oversized paste/type here (rather than only flagging it
+  // after the fact) keeps it out of React state entirely — a controlled
+  // textarea reflows on every value change, and that cost is what caused a
+  // real browser freeze on a very large paste. See MAX_INPUT_LENGTH.
+  const setInputGuarded = (text) => {
+    if (text.length > MAX_INPUT_LENGTH) {
+      showToast(`That's too much text to paste at once (over ${MAX_INPUT_LENGTH.toLocaleString()} characters). Please use a smaller amount.`);
+      return;
+    }
+    setInput(text);
+  };
+
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setInput(text);
+      setInputGuarded(text);
       setActiveQuickPreset(null);
     } catch {
       showToast("Clipboard access was blocked. Paste manually with Ctrl/Cmd+V.");
@@ -442,7 +454,7 @@ export default function Converter({ id }) {
           <LineNumberedTextarea
             placeholder="Paste or type your data here…"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInputGuarded(e.target.value)}
             ariaLabel="Input data"
           />
           <div className="panel__footer">

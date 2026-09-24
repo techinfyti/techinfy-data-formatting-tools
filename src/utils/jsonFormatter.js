@@ -1,6 +1,8 @@
 // Core JSON formatting logic — pure, dependency-free, runs entirely in the browser.
 
-export const JSON_MAX_INPUT_LENGTH = 2_000_000;
+// See converter.js's MAX_INPUT_LENGTH for why this is 100,000, not millions:
+// large controlled-textarea reflows measurably freeze the browser tab.
+export const JSON_MAX_INPUT_LENGTH = 100_000;
 
 function sortKeysDeep(value) {
   if (Array.isArray(value)) return value.map(sortKeysDeep);

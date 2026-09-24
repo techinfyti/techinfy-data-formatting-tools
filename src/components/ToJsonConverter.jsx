@@ -280,10 +280,23 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
     ]
   );
 
+  // Rejecting an oversized paste/type here (rather than only flagging it
+  // after the fact) keeps it out of React state entirely — a controlled
+  // textarea reflows on every value change, and that cost is what caused a
+  // real browser freeze on a very large paste. All the per-format limits
+  // are the same value, so any of them works as this general guard.
+  const setInputGuarded = (text) => {
+    if (text.length > CSV_MAX_INPUT_LENGTH) {
+      showToast(`That's too much text to paste at once (over ${CSV_MAX_INPUT_LENGTH.toLocaleString()} characters). Please use a smaller amount.`);
+      return;
+    }
+    setInput(text);
+  };
+
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setInput(text);
+      setInputGuarded(text);
     } catch {
       showToast("Clipboard access was blocked. Paste manually with Ctrl/Cmd+V.");
     }
@@ -573,7 +586,7 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
             <LineNumberedTextarea
               placeholder={format.placeholder}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => setInputGuarded(e.target.value)}
               ariaLabel="Input data"
             />
           )}
