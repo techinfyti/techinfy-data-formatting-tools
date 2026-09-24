@@ -10,16 +10,16 @@ export const DELIMITER_PRESETS = [
   { id: "newline", label: "New Line", value: "\n" },
 ];
 
-// Measured directly, twice, and still hit a real freeze at 150,000 on
-// slower hardware than the one this was benchmarked on: a single reflow
-// scales with content size, and — critically — a real native browser paste
-// reflows the DOM immediately, before React (or any JS-level throttle) ever
-// runs; throttling only removes React's own *extra* re-render on top of
-// that, not the unavoidable native one. Repeated real pastes each pay that
-// native cost, and it compounds. 75,000 stays well clear of the point where
-// that's been observed to freeze a real tab, while still leaving headroom
-// above realistic single-paste data.
-export const MAX_INPUT_LENGTH = 75_000;
+// A real native paste reflows the DOM the instant it's inserted, before any
+// JS (React, throttling) runs — that cost is unavoidable and compounds with
+// repeated pastes. This has been observed to freeze a real tab at 150,000
+// and again at 105,440 characters. 100,000, tested against the same
+// rapid-repeated-paste stress pattern with the current throttle + native
+// paste interceptor (see setInputGuarded / LineNumberedTextarea's onPaste),
+// consistently measured 1.6-1.7s — a solid multiple below the ~5s freeze
+// threshold, unlike 150,000's 2.6-3.9s. If a real freeze is ever reported
+// again at or under this value, lower it further rather than raising it.
+export const MAX_INPUT_LENGTH = 100_000;
 
 /**
  * Resolve the active delimiter string from the UI state.

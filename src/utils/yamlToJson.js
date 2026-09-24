@@ -4,7 +4,7 @@
 
 // See converter.js's MAX_INPUT_LENGTH for the reasoning behind this value:
 // large controlled-textarea reflows measurably freeze the browser tab.
-export const YAML_MAX_INPUT_LENGTH = 75_000;
+export const YAML_MAX_INPUT_LENGTH = 100_000;
 
 /** Turn js-yaml's YAMLException into a friendlier, line/column-aware message. */
 function friendlyYamlError(err) {
