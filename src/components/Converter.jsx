@@ -6,6 +6,7 @@ import {
   resolveDelimiter,
   convert,
 } from "../utils/converter.js";
+import LineNumberedTextarea from "./LineNumberedTextarea.jsx";
 import "./Converter.css";
 
 const SAMPLE_INPUT = "Apple\nOrange\nBanana\nMango\nGrape";
@@ -435,13 +436,11 @@ export default function Converter({ id }) {
               </button>
             </div>
           </div>
-          <textarea
-            className="panel__textarea"
+          <LineNumberedTextarea
             placeholder="Paste or type your data here…"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            spellCheck="false"
-            aria-label="Input data"
+            ariaLabel="Input data"
           />
           <div className="panel__footer">
             <span>{input.length.toLocaleString()} characters</span>

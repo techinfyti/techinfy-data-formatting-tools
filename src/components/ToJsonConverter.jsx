@@ -5,6 +5,7 @@ import { xmlToJson } from "../utils/xmlToJson.js";
 import { yamlToJson } from "../utils/yamlToJson.js";
 import { EXCEL_MAX_FILE_SIZE, excelToJson, isLikelySpreadsheet } from "../utils/excelToJson.js";
 import { textToJson } from "../utils/textToJson.js";
+import LineNumberedTextarea from "./LineNumberedTextarea.jsx";
 
 const TEXT_SAMPLES = {
   lines: "Apple\nOrange\nBanana\nMango\nGrape",
@@ -567,13 +568,11 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
               )}
             </div>
           ) : (
-            <textarea
-              className="panel__textarea"
+            <LineNumberedTextarea
               placeholder={format.placeholder}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              spellCheck="false"
-              aria-label="Input data"
+              ariaLabel="Input data"
             />
           )}
           <div className="panel__footer">

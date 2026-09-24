@@ -3,6 +3,7 @@ import Seo from "../components/Seo.jsx";
 import "../components/Converter.css";
 import "./pages.css";
 import { JSON_MAX_INPUT_LENGTH, processJson } from "../utils/jsonFormatter.js";
+import LineNumberedTextarea from "../components/LineNumberedTextarea.jsx";
 
 const SAMPLE_INPUT = JSON.stringify(
   { name: "Techinfy", tools: ["Delimiter Converter", "JSON Formatter"], free: true, rating: null },
@@ -236,13 +237,11 @@ export default function JsonFormatter() {
                   </button>
                 </div>
               </div>
-              <textarea
-                className="panel__textarea"
+              <LineNumberedTextarea
                 placeholder="Paste your JSON here…"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                spellCheck="false"
-                aria-label="Input data"
+                ariaLabel="Input data"
               />
               <div className="panel__footer">
                 <span>{input.length.toLocaleString()} characters</span>
