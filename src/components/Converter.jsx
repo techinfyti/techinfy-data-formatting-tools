@@ -71,6 +71,14 @@ const DEBOUNCE_DELAY = 200;
 // that backlog build up. Rejecting a large update outright when one was
 // just accepted, rather than queuing it for later, guarantees the rate of
 // expensive reflows stays capped no matter how fast pastes arrive.
+//
+// This must stay well above DEBOUNCE_THRESHOLD: a single normal paste (one
+// spreadsheet column, a CSV export) can easily be 10k-20k characters, and
+// two of those pasted a normal half-second apart is routine workflow, not
+// a stress pattern — cooling down at 5,000 chars was rejecting exactly
+// that. Only pastes actually large enough to be a real reflow-cost risk
+// should ever hit this.
+const COOLDOWN_THRESHOLD = 30_000;
 const COOLDOWN_MS = 1_000;
 
 function useDebouncedValue(value, delay) {
@@ -141,9 +149,10 @@ export default function Converter({ id }) {
       return;
     }
 
-    // Small edits stay instant — the cooldown only kicks in once a single
-    // update is already big enough for its own reflow to be noticeable.
-    if (text.length <= DEBOUNCE_THRESHOLD) {
+    // Normal-sized edits (including a typical single large paste) stay
+    // instant — the cooldown only kicks in for updates large enough to be
+    // a genuine reflow-cost risk on their own.
+    if (text.length <= COOLDOWN_THRESHOLD) {
       setInput(text);
       return;
     }
