@@ -10,14 +10,17 @@ export const DELIMITER_PRESETS = [
   { id: "newline", label: "New Line", value: "\n" },
 ];
 
-// Measured directly: rendering a controlled textarea reflows on every value
-// change, and that cost scales roughly linearly with content size — a
-// single keystroke at 100,000 lines (~640k chars) measured over 2 seconds
-// of reflow for one textarea alone, and this page has two (input + output),
-// which is exactly what caused a real "Page Unresponsive" browser freeze.
-// 300,000 chars stays well clear of that zone (well under half the
-// measured danger point) while comfortably fitting realistic pasted data.
-export const MAX_INPUT_LENGTH = 300_000;
+// Measured directly, twice. First: a single controlled-textarea reflow
+// scales roughly linearly with content size (100,000 lines/~640k chars took
+// ~2s for one textarea; this page has two). Second, and more important:
+// rapid back-to-back updates (e.g. pasting several times in quick
+// succession) each reflow again with no gap to breathe, so even individually
+// "safe" updates compound — a real burst growing to ~288,000 chars measured
+// over 9 seconds of cumulative main-thread time even with updates throttled
+// (see setInputGuarded), while the same burst capped at 150,000 chars
+// measured under 3 seconds. 150,000 keeps a solid margin under that curve
+// while still comfortably fitting realistic pasted data.
+export const MAX_INPUT_LENGTH = 150_000;
 
 /**
  * Resolve the active delimiter string from the UI state.

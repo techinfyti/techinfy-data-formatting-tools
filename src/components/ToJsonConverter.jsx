@@ -112,6 +112,16 @@ const BINARY_CONTENT_PATTERN = /[�\x00-\x08\x0E-\x1F]/g;
 const DEBOUNCE_THRESHOLD = 5_000;
 const DEBOUNCE_DELAY = 200;
 
+// Each large update reflows the (controlled) textarea, and that cost is
+// real even when a single update stays under the max length. Rapid
+// back-to-back updates (e.g. pasting several times in quick succession)
+// each trigger their own reflow with no gap to breathe — individually fine,
+// but the cumulative main-thread time is exactly what caused a real
+// multi-second "Page Unresponsive" freeze well under the size limit.
+// Throttling large updates to one per interval coalesces bursts into a
+// single reflow instead of stacking many.
+const THROTTLE_INTERVAL = 200;
+
 function useDebouncedValue(value, delay) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -198,6 +208,8 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
   const [excelFileName, setExcelFileName] = useState("");
   const [textMode, setTextMode] = useState("lines");
   const fileInputRef = useRef(null);
+  const lastAppliedRef = useRef(0);
+  const pendingThrottleRef = useRef(null);
 
   const handleFormatChange = (nextId) => {
     const next = TO_JSON_FORMATS.find((f) => f.id === nextId);
@@ -290,8 +302,29 @@ export default function ToJsonConverter({ defaultFormat = "csv" }) {
       showToast(`That's too much text to paste at once (over ${CSV_MAX_INPUT_LENGTH.toLocaleString()} characters). Please use a smaller amount.`);
       return;
     }
-    setInput(text);
+
+    // Small edits stay instant — throttling only kicks in once a single
+    // update is already big enough for its own reflow to be noticeable.
+    if (text.length <= DEBOUNCE_THRESHOLD) {
+      setInput(text);
+      return;
+    }
+
+    if (pendingThrottleRef.current) clearTimeout(pendingThrottleRef.current);
+    const now = Date.now();
+    const elapsed = now - lastAppliedRef.current;
+    if (elapsed >= THROTTLE_INTERVAL) {
+      lastAppliedRef.current = now;
+      setInput(text);
+    } else {
+      pendingThrottleRef.current = setTimeout(() => {
+        lastAppliedRef.current = Date.now();
+        setInput(text);
+      }, THROTTLE_INTERVAL - elapsed);
+    }
   };
+
+  useEffect(() => () => pendingThrottleRef.current && clearTimeout(pendingThrottleRef.current), []);
 
   const handlePaste = async () => {
     try {

@@ -2,7 +2,7 @@
 
 // See converter.js's MAX_INPUT_LENGTH for the reasoning behind this value:
 // large controlled-textarea reflows measurably freeze the browser tab.
-export const CSV_MAX_INPUT_LENGTH = 300_000;
+export const CSV_MAX_INPUT_LENGTH = 150_000;
 
 /** RFC4180-ish parser: handles quoted fields, embedded delimiters/newlines, and "" escapes. */
 function parseDelimited(text, delimiter) {
