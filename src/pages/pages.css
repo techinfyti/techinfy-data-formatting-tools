@@ -38,8 +38,15 @@
 .page-hero p {
   color: var(--text-muted);
   font-size: 1.05rem;
-  max-width: 680px;
   line-height: 1.65;
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .page-hero p {
+    white-space: normal;
+    max-width: 680px;
+  }
 }
 
 .prose h2 {
