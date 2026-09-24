@@ -1,8 +1,8 @@
 // Plain text → JSON conversion — pure, dependency-free, runs entirely in the browser.
 
-// See converter.js's MAX_INPUT_LENGTH for why this is 100,000, not millions:
+// See converter.js's MAX_INPUT_LENGTH for the reasoning behind this value:
 // large controlled-textarea reflows measurably freeze the browser tab.
-export const TEXT_MAX_INPUT_LENGTH = 100_000;
+export const TEXT_MAX_INPUT_LENGTH = 300_000;
 
 function coerce(value) {
   if (value === "") return null;

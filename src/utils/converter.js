@@ -15,9 +15,9 @@ export const DELIMITER_PRESETS = [
 // single keystroke at 100,000 lines (~640k chars) measured over 2 seconds
 // of reflow for one textarea alone, and this page has two (input + output),
 // which is exactly what caused a real "Page Unresponsive" browser freeze.
-// 100,000 chars keeps the worst case comfortably under ~500ms even on
-// slower devices.
-export const MAX_INPUT_LENGTH = 100_000;
+// 300,000 chars stays well clear of that zone (well under half the
+// measured danger point) while comfortably fitting realistic pasted data.
+export const MAX_INPUT_LENGTH = 300_000;
 
 /**
  * Resolve the active delimiter string from the UI state.
