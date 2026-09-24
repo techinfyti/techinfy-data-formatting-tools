@@ -1,13 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import "./LineNumberedTextarea.css";
 
-// Debounce recomputing the total line count (a full split of the value) so
-// very fast typing/pasting doesn't add lag. This only guards the cost of
-// counting lines in a huge string — the gutter itself always renders a
-// small, fixed-size slice regardless of document size (see below).
-const DEBOUNCE_THRESHOLD = 5_000;
-const DEBOUNCE_DELAY = 200;
-
 // Extra lines rendered above/below the visible window, so a fast scroll
 // doesn't show a blank gap for a frame before React catches up.
 const VIRTUALIZE_BUFFER_LINES = 15;
@@ -51,17 +44,13 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
   const [scrollTop, setScrollTop] = useState(0);
   const [metrics, setMetrics] = useState({ lineHeight: 21, clientHeight: 288 });
 
-  const delay = value.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0;
-  const [debounced, setDebounced] = useState(value);
-
-  useLayoutEffect(() => {
-    if (delay <= 0) return;
-    const timer = setTimeout(() => setDebounced(value), delay);
-    return () => clearTimeout(timer);
-  }, [value, delay]);
-
-  const debouncedValue = delay <= 0 ? value : debounced;
-  const totalLines = countLines(debouncedValue);
+  // No debounce needed here: virtualization already removed the expensive
+  // part (rendering every line number), so counting lines is cheap enough
+  // to do on every render. Debouncing it previously left totalLines lagging
+  // scrollTop by up to a debounce cycle — e.g. right after pasting content
+  // that auto-scrolls to the bottom, the gutter would clamp to the *old*
+  // (much smaller) line count and show the wrong numbers for a moment.
+  const totalLines = countLines(value);
 
   // Measure once on mount and again on resize (font/zoom can change
   // line-height) — never on content changes, so this stays O(1) no matter
