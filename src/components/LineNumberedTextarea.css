@@ -21,6 +21,17 @@
   overflow: hidden;
   background: var(--bg-subtle);
   border-right: 1px solid var(--border);
+  position: relative;
+}
+
+/* Laid out (so its real rendered height can be measured) but never
+   painted — used only to calibrate the gutter's per-line pixel height
+   without ever touching the (possibly huge) main textarea's layout. */
+.line-numbered__gutter-calibration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
 }
 
 .line-numbered__textarea {
