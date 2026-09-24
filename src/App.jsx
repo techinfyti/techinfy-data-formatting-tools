@@ -46,7 +46,7 @@ function Layout() {
       <Header />
       <main id="main-content" style={{ flex: 1 }}>
         <ErrorBoundary key={pathname}>
-          <Suspense fallback={null}>
+          <Suspense fallback={<div style={{ minHeight: "70vh" }} />}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/tools" element={<Tools />} />
