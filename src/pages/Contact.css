@@ -1,7 +1,10 @@
 /* The submit button should be reachable without scrolling on common
    viewport heights, so this section keeps a much tighter top padding
-   than the default .section (which is sized for long-form content). */
-.contact-section {
+   than the default .section (which is sized for long-form content).
+   Compound selector (not just .contact-section) so this reliably beats
+   .section's padding regardless of CSS injection order — see the same
+   note on .section.section--top in Home.css. */
+.section.contact-section {
   padding-top: 20px;
 }
 

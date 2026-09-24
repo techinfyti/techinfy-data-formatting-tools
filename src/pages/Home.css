@@ -17,7 +17,12 @@
   75%      { color: #a259ff; }
 }
 
-.section--top {
+/* Compound selector (not just .section--top) so this reliably beats
+   .section's padding regardless of CSS injection order — pages.css gets
+   imported from multiple page modules, and which copy's rule ends up
+   later in the cascade is not guaranteed to stay consistent across
+   client-side route navigations. */
+.section.section--top {
   padding-top: 8px;
 }
 
