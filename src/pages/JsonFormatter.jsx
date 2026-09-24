@@ -25,10 +25,12 @@ const DEBOUNCE_DELAY = 200;
 // back-to-back updates (e.g. pasting several times in quick succession)
 // each trigger their own reflow with no gap to breathe — individually fine,
 // but the cumulative main-thread time is exactly what caused a real
-// multi-second "Page Unresponsive" freeze well under the size limit.
-// Throttling large updates to one per interval coalesces bursts into a
-// single reflow instead of stacking many.
-const THROTTLE_INTERVAL = 400;
+// multi-second "Page Unresponsive" freeze well under the size limit, and
+// on real (slower) hardware a queued/deferred trailing update still let
+// that backlog build up. Rejecting a large update outright when one was
+// just accepted, rather than queuing it for later, guarantees the rate of
+// expensive reflows stays capped no matter how fast pastes arrive.
+const COOLDOWN_MS = 1_000;
 
 function useDebouncedValue(value, delay) {
   const [debounced, setDebounced] = useState(value);
@@ -65,7 +67,6 @@ export default function JsonFormatter() {
   const [toast, showToast] = useToast();
   const fileInputRef = useRef(null);
   const lastAppliedRef = useRef(0);
-  const pendingThrottleRef = useRef(null);
 
   const debouncedInput = useDebouncedValue(input, input.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0);
 
@@ -84,28 +85,21 @@ export default function JsonFormatter() {
       return;
     }
 
-    // Small edits stay instant — throttling only kicks in once a single
+    // Small edits stay instant — the cooldown only kicks in once a single
     // update is already big enough for its own reflow to be noticeable.
     if (text.length <= DEBOUNCE_THRESHOLD) {
       setInput(text);
       return;
     }
 
-    if (pendingThrottleRef.current) clearTimeout(pendingThrottleRef.current);
     const now = Date.now();
-    const elapsed = now - lastAppliedRef.current;
-    if (elapsed >= THROTTLE_INTERVAL) {
-      lastAppliedRef.current = now;
-      setInput(text);
-    } else {
-      pendingThrottleRef.current = setTimeout(() => {
-        lastAppliedRef.current = Date.now();
-        setInput(text);
-      }, THROTTLE_INTERVAL - elapsed);
+    if (now - lastAppliedRef.current < COOLDOWN_MS) {
+      showToast("You're adding data too quickly — please wait a moment before pasting more.");
+      return;
     }
+    lastAppliedRef.current = now;
+    setInput(text);
   };
-
-  useEffect(() => () => pendingThrottleRef.current && clearTimeout(pendingThrottleRef.current), []);
 
   const handlePaste = async () => {
     try {
