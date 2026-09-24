@@ -1,14 +1,14 @@
 .converter {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .converter__settings {
-  padding: 20px;
+  padding: 10px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .settings-row {
@@ -164,7 +164,7 @@
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  padding: 14px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--border);
 }
 

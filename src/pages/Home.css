@@ -1,12 +1,12 @@
 @import "./pages.css";
 
 .home-title {
-  padding-top: 36px;
+  padding-top: 4px;
   text-align: center;
 }
 
 .home-title h1 {
-  font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
   animation: title-color-cycle 6s ease-in-out infinite;
 }
 
@@ -18,7 +18,19 @@
 }
 
 .section--top {
-  padding-top: 24px;
+  padding-top: 8px;
+}
+
+/* The converter box sits directly under this heading/subheading, so
+   keeping it tight matters more here than for other sections — the goal
+   is fitting the whole Input/Output box above the fold on common laptop
+   viewport heights. */
+#converter .section__heading {
+  margin-bottom: 6px;
+}
+
+#converter .section__subheading {
+  margin-bottom: 14px;
 }
 
 .highlights__grid {
