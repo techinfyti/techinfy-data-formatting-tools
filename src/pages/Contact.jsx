@@ -34,11 +34,11 @@ export default function Contact() {
         </div>
       </header>
 
-      <section className="container section">
+      <section className="container section contact-section">
         <div className="contact-grid">
           <div className="card contact-form">
-            <h2 className="section__heading" style={{ fontSize: "1.2rem" }}>Send a message</h2>
-            <p className="section__subheading" style={{ marginBottom: 18 }}>
+            <h2 className="section__heading" style={{ fontSize: "1.2rem", marginBottom: 4 }}>Send a message</h2>
+            <p className="section__subheading" style={{ marginBottom: 10 }}>
               This opens your email app with the message pre-filled — nothing is sent to a server.
             </p>
             <form
