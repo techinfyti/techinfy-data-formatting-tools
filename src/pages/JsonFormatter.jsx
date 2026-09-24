@@ -15,7 +15,9 @@ const BINARY_FILE_PATTERN = /\.(xlsx|xls|docx|doc|pdf|pptx|ppt|zip|rar|7z|png|jp
 // eslint-disable-next-line no-control-regex -- intentional: detecting binary content
 const BINARY_CONTENT_PATTERN = /[�\x00-\x08\x0E-\x1F]/g;
 
-const DEBOUNCE_THRESHOLD = 50_000;
+// Cost scales with line count more than character count, so this is set
+// low enough to catch large inputs even when lines are short.
+const DEBOUNCE_THRESHOLD = 5_000;
 const DEBOUNCE_DELAY = 200;
 
 function useDebouncedValue(value, delay) {
@@ -246,7 +248,7 @@ export default function JsonFormatter() {
               <div className="panel__footer">
                 <span>{input.length.toLocaleString()} characters</span>
                 <span aria-hidden="true">·</span>
-                <span>{countLines(input).toLocaleString()} lines</span>
+                <span>{countLines(debouncedInput).toLocaleString()} lines</span>
               </div>
             </div>
 

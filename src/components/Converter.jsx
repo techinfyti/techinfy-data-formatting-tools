@@ -54,8 +54,11 @@ function useToast() {
 
 // Above this size, debounce the (expensive) conversion so a large paste or
 // fast typing doesn't block the textarea from updating. Below it, updates
-// stay instant — the whole point of a live converter.
-const DEBOUNCE_THRESHOLD = 50_000;
+// stay instant — the whole point of a live converter. Cost scales with line
+// count more than character count, so this is set low enough to catch
+// large inputs even when lines are short (e.g. ~10k short lines is only
+// ~50k characters, which used to sail past a naive char-only threshold).
+const DEBOUNCE_THRESHOLD = 5_000;
 const DEBOUNCE_DELAY = 200;
 
 function useDebouncedValue(value, delay) {
@@ -445,7 +448,7 @@ export default function Converter({ id }) {
           <div className="panel__footer">
             <span>{input.length.toLocaleString()} characters</span>
             <span aria-hidden="true">·</span>
-            <span>{countLines(input).toLocaleString()} lines</span>
+            <span>{countLines(debouncedInput).toLocaleString()} lines</span>
           </div>
         </div>
 

@@ -1,5 +1,11 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./LineNumberedTextarea.css";
+
+// Above this size, debounce the (expensive) gutter recompute so fast typing
+// or a large paste doesn't lag — splitting/joining thousands of lines on
+// every keystroke is the main cost, not the character count itself.
+const DEBOUNCE_THRESHOLD = 5_000;
+const DEBOUNCE_DELAY = 200;
 
 /** Line numbers must count every line (including blank ones) to stay aligned with the textarea's rows. */
 function getLineNumbers(text) {
@@ -18,6 +24,18 @@ function getLineNumbers(text) {
  */
 export default function LineNumberedTextarea({ value, onChange, placeholder, readOnly, ariaLabel }) {
   const gutterRef = useRef(null);
+  const delay = value.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0;
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    if (delay <= 0) return;
+    const timer = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+
+  // Below the threshold, skip the state round-trip and reflect the value
+  // immediately — keeps everyday typing at zero added latency.
+  const debouncedValue = delay <= 0 ? value : debounced;
 
   const handleScroll = (e) => {
     if (gutterRef.current) {
@@ -28,7 +46,7 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
   return (
     <div className="line-numbered">
       <div className="line-numbered__gutter" ref={gutterRef} aria-hidden="true">
-        {getLineNumbers(value)}
+        {getLineNumbers(debouncedValue)}
       </div>
       <textarea
         className="line-numbered__textarea"
