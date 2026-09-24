@@ -1,7 +1,6 @@
 .line-numbered {
   flex: 1;
   min-height: 320px;
-  max-height: 600px;
   display: flex;
   background: var(--bg-inset);
 }
@@ -35,7 +34,8 @@
   line-height: 1.55;
   padding: 16px;
   white-space: pre;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .line-numbered__textarea:focus-visible {
