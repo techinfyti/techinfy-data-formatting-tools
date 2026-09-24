@@ -24,6 +24,7 @@ function getLineNumbers(text) {
  */
 export default function LineNumberedTextarea({ value, onChange, placeholder, readOnly, ariaLabel }) {
   const gutterRef = useRef(null);
+  const textareaRef = useRef(null);
   const delay = value.length > DEBOUNCE_THRESHOLD ? DEBOUNCE_DELAY : 0;
   const [debounced, setDebounced] = useState(value);
 
@@ -37,6 +38,16 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
   // immediately — keeps everyday typing at zero added latency.
   const debouncedValue = delay <= 0 ? value : debounced;
 
+  // While debounced, the gutter's own height lags behind the textarea's, so
+  // a scroll during that window clamps the gutter's scrollTop to its
+  // too-small max. Once the debounce catches up and the gutter regrows, it
+  // otherwise stays stuck at that clamped position — re-sync it here.
+  useEffect(() => {
+    if (gutterRef.current && textareaRef.current) {
+      gutterRef.current.scrollTop = textareaRef.current.scrollTop;
+    }
+  }, [debouncedValue]);
+
   const handleScroll = (e) => {
     if (gutterRef.current) {
       gutterRef.current.scrollTop = e.target.scrollTop;
@@ -49,6 +60,7 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
         {getLineNumbers(debouncedValue)}
       </div>
       <textarea
+        ref={textareaRef}
         className="line-numbered__textarea"
         placeholder={placeholder}
         value={value}
