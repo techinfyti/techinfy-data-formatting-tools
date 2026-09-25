@@ -7,24 +7,13 @@
 
 .home-title h1 {
   font-size: clamp(1.3rem, 2.6vw, 1.7rem);
-  /* Indian flag tricolor: saffron, white, green, as three solid bands
-     (hard gradient stops) rather than a blended gradient, so each color
-     reads as its own stripe. The shadow keeps the white band visible
-     against a light page background, where plain white text would
-     otherwise disappear. */
-  background: linear-gradient(
-    to right,
-    #ff9933 0%,
-    #ff9933 33%,
-    #ffffff 33%,
-    #ffffff 67%,
-    #138808 67%,
-    #138808 100%
-  );
+  /* Same blue -> cyan -> green gradient as the logo mark and the site's
+     other brand accents (active nav pill, footer link), so the heading
+     reads as an extension of the logo rather than an unrelated color. */
+  background: var(--logo-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 1.5px rgba(0, 0, 0, 0.4), 0 1px 1px rgba(0, 0, 0, 0.25);
 }
 
 /* Compound selector (not just .section--top) so this reliably beats
