@@ -187,13 +187,27 @@
 
 .panel__title {
   font-size: 0.95rem;
-  color: var(--text);
+  font-weight: 700;
+  color: var(--brand);
 }
 
 .panel__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+/* Scoped to the panel header's own buttons rather than restyling the
+   shared .btn-secondary class everywhere it's used on the site. */
+.panel__actions .btn-secondary {
+  background: var(--brand-soft);
+  color: var(--brand);
+  border-color: var(--brand);
+}
+.panel__actions .btn-secondary:hover:not(:disabled) {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
 }
 
 .file-upload-btn {
