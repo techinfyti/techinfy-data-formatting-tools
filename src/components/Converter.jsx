@@ -300,7 +300,7 @@ export default function Converter({ id }) {
           )}
 
           <div className="settings-group settings-group--advanced">
-            <span className="field-label visually-hidden">More options</span>
+            <span className="field-label visually-hidden">More Filters</span>
             <button
               type="button"
               className="btn btn-secondary advanced-toggle"
@@ -308,7 +308,7 @@ export default function Converter({ id }) {
               aria-controls="more-options-panel"
               onClick={() => setShowAdvanced((v) => !v)}
             >
-              <span className="advanced-toggle__label">More options</span>
+              <span className="advanced-toggle__label">More Filters</span>
               <span className={"advanced-toggle__chevron" + (showAdvanced ? " is-open" : "")} aria-hidden="true">▾</span>
             </button>
           </div>
