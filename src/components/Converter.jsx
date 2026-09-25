@@ -319,6 +319,7 @@ export default function Converter({ id }) {
         <div className="formatting-options">
           <span className="field-label">Formatting options</span>
           <div className="formatting-options__grid">
+          <div className="formatting-options__checkboxes">
             <label className="checkbox-row">
               <input
                 type="checkbox"
@@ -389,6 +390,8 @@ export default function Converter({ id }) {
                 </label>
               </div>
             )}
+          </div>
+          <div className="formatting-options__fields">
             <div className="text-field-group">
               <label className="field-label" htmlFor="remove-prefix-input">Remove prefix</label>
               <input
@@ -444,6 +447,7 @@ export default function Converter({ id }) {
                 onChange={(e) => handleOptionChange("suffix", e.target.value)}
               />
             </div>
+          </div>
           </div>
         </div>
 
