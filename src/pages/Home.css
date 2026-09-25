@@ -7,13 +7,10 @@
 
 .home-title h1 {
   font-size: clamp(1.3rem, 2.6vw, 1.7rem);
-  /* Same blue -> cyan -> green gradient as the logo mark and the site's
-     other brand accents (active nav pill, footer link), so the heading
-     reads as an extension of the logo rather than an unrelated color. */
-  background: var(--logo-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  /* var(--text), not a literal black — it's near-black in light mode but
+     switches to a light color in dark mode, so the heading stays legible
+     instead of turning invisible against a dark background. */
+  color: var(--text);
 }
 
 /* Compound selector (not just .section--top) so this reliably beats
