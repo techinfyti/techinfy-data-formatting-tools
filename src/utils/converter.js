@@ -88,6 +88,14 @@ export function applyFormatting(values, options) {
   if (options.removeSuffix) {
     result = result.map((v) => (v.endsWith(options.removeSuffix) ? v.slice(0, v.length - options.removeSuffix.length) : v));
   }
+  if (options.removeText) {
+    // Unlike remove prefix/suffix (start/end only), this strips every
+    // occurrence anywhere in the value — e.g. removing "&" from
+    // "1709697 & 1217132" wherever it falls, not just at the edges.
+    // split/join rather than a regex so special characters like "&" or
+    // "." are treated literally, not as pattern syntax.
+    result = result.map((v) => v.split(options.removeText).join(""));
+  }
 
   if (options.prefix) {
     result = result.map((v) => `${options.prefix}${v}`);
