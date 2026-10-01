@@ -299,6 +299,18 @@ export default function Converter({ id }) {
             </div>
           )}
 
+          <div className="settings-group settings-group--delimiter">
+            <label className="field-label" htmlFor="remove-text-input">Remove text (anywhere)</label>
+            <input
+              id="remove-text-input"
+              type="text"
+              className="text-input"
+              placeholder="e.g. &"
+              value={options.removeText}
+              onChange={(e) => handleOptionChange("removeText", e.target.value)}
+            />
+          </div>
+
           <div className="settings-group settings-group--advanced">
             <span className="field-label visually-hidden">More Filters</span>
             <button
@@ -412,17 +424,6 @@ export default function Converter({ id }) {
                 placeholder="e.g. .csv"
                 value={options.removeSuffix}
                 onChange={(e) => handleOptionChange("removeSuffix", e.target.value)}
-              />
-            </div>
-            <div className="text-field-group">
-              <label className="field-label" htmlFor="remove-text-input">Remove text (anywhere)</label>
-              <input
-                id="remove-text-input"
-                type="text"
-                className="text-input"
-                placeholder="e.g. &"
-                value={options.removeText}
-                onChange={(e) => handleOptionChange("removeText", e.target.value)}
               />
             </div>
             <div className="text-field-group">
