@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Seo from "../components/Seo.jsx";
 import Converter from "../components/Converter.jsx";
 import AdSlot from "../components/AdSlot.jsx";
+import VideoEmbed from "../components/VideoEmbed.jsx";
 import "./Home.css";
 
 const HIGHLIGHTS = [
@@ -113,6 +114,14 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="container section video-section">
+        <h2 className="section__heading">See it in action</h2>
+        <p className="section__subheading">
+          A 48-second tour of the converter, formatting options, JSON tools and presets.
+        </p>
+        <VideoEmbed />
       </section>
 
       <section className="container section faq">

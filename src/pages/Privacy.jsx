@@ -69,6 +69,14 @@ export default function Privacy() {
           cross-site tracking tool.
         </p>
 
+        <h2>Embedded video</h2>
+        <p>
+          The home page includes an introductory video hosted on YouTube. Nothing is loaded from
+          YouTube until you click play — at that point the video loads from YouTube's
+          privacy-enhanced domain (youtube-nocookie.com), and YouTube's own privacy policy applies
+          to that playback. Your converter data is never involved either way.
+        </p>
+
         <h2>Advertising</h2>
         <p>
           TechInfy Data Tools has applied to show ads through Google AdSense, and the AdSense
