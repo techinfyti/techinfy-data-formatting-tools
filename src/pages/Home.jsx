@@ -96,10 +96,24 @@ export default function Home() {
       </section>
 
       <section id="converter" className="container section section--top">
-        <h2 className="section__heading">Delimiter Converter</h2>
-        <p className="section__subheading">
-          Turn a column of values into delimited text using any preset or custom delimiter.
-        </p>
+        <div className="converter-head">
+          <div className="converter-head__text">
+            <h2 className="section__heading">Delimiter Converter</h2>
+            <p className="section__subheading">
+              Turn a column of values into delimited text using any preset or custom delimiter.
+            </p>
+          </div>
+          <Link to="/tools" className="more-tools-btn">
+            <svg className="more-tools-btn__icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+              <rect x="3" y="3" width="8" height="8" rx="2" />
+              <rect x="13" y="3" width="8" height="8" rx="2" />
+              <rect x="3" y="13" width="8" height="8" rx="2" />
+              <rect x="13" y="13" width="8" height="8" rx="2" />
+            </svg>
+            <span>More Tools</span>
+            <span className="more-tools-btn__arrow" aria-hidden="true">→</span>
+          </Link>
+        </div>
         <Converter />
       </section>
 
