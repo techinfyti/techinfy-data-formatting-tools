@@ -75,6 +75,16 @@
   animation: more-tools-shine 3.6s ease-in-out infinite;
 }
 
+.more-tools-btn:hover,
+.more-tools-btn:focus-visible {
+  text-decoration: none;
+}
+
+.more-tools-btn__icon {
+  flex: 0 0 auto;
+  animation: more-tools-spin 4s linear infinite;
+}
+
 .more-tools-btn:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 12px 28px rgba(2, 201, 232, 0.5), 0 4px 10px rgba(5, 97, 176, 0.35);
@@ -93,11 +103,20 @@
   display: inline-block;
   font-size: 1.15rem;
   line-height: 1;
-  transition: transform 0.15s ease;
+  animation: more-tools-nudge 1.2s ease-in-out infinite;
 }
 
 .more-tools-btn:hover .more-tools-btn__arrow {
-  transform: translateX(4px);
+  animation-duration: 0.6s;
+}
+
+@keyframes more-tools-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes more-tools-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
 }
 
 @keyframes more-tools-flow {
@@ -112,7 +131,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .more-tools-btn,
-  .more-tools-btn::after {
+  .more-tools-btn::after,
+  .more-tools-btn__icon,
+  .more-tools-btn__arrow {
     animation: none;
   }
 }
