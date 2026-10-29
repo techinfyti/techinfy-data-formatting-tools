@@ -1,2 +1,5 @@
 /*
   Strict-Transport-Security: max-age=15552000
+
+/sw.js
+  Cache-Control: no-cache
