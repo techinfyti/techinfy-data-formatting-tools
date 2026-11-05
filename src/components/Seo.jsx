@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 const SITE_NAME = "TechInfy Data Tools";
-const OG_SITE_NAME = "Free Online Comma Separator Tool";
+const OG_SITE_NAME = "Free Online Comma Separator & Delimiter Tool";
 const DEFAULT_DESCRIPTION =
   "Free online delimiter tool to convert and clean lists, CSV, SQL and JSON data. Switch between comma, pipe, tab and custom delimiters instantly, right in your browser.";
 
