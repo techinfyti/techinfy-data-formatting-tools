@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 const SITE_NAME = "TechInfy Data Tools";
+const OG_SITE_NAME = "Free Online Comma Separator Tool";
 const DEFAULT_DESCRIPTION =
   "Free online delimiter tool to convert and clean lists, CSV, SQL and JSON data. Switch between comma, pipe, tab and custom delimiters instantly, right in your browser.";
 
@@ -27,7 +28,7 @@ export default function Seo({ title, description = DEFAULT_DESCRIPTION }) {
     setMetaTag("property", "og:title", fullTitle);
     setMetaTag("property", "og:description", description);
     setMetaTag("property", "og:type", "website");
-    setMetaTag("property", "og:site_name", SITE_NAME);
+    setMetaTag("property", "og:site_name", OG_SITE_NAME);
     setMetaTag("name", "twitter:card", "summary_large_image");
     setMetaTag("name", "twitter:title", fullTitle);
     setMetaTag("name", "twitter:description", description);
