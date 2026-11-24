@@ -19,6 +19,7 @@ const XmlToJson = lazy(() => import("./pages/XmlToJson.jsx"));
 const YamlToJson = lazy(() => import("./pages/YamlToJson.jsx"));
 const ExcelToJson = lazy(() => import("./pages/ExcelToJson.jsx"));
 const TextToJson = lazy(() => import("./pages/TextToJson.jsx"));
+const ExcelColumnToCommaList = lazy(() => import("./pages/ExcelColumnToCommaList.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
@@ -60,6 +61,7 @@ function Layout() {
               <Route path="/yaml-to-json" element={<YamlToJson />} />
             <Route path="/excel-to-json" element={<ExcelToJson />} />
             <Route path="/text-to-json" element={<TextToJson />} />
+              <Route path="/excel-column-to-comma-separated-list" element={<ExcelColumnToCommaList />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

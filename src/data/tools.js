@@ -108,6 +108,15 @@ export const TOOLS = [
     status: "available",
   },
   {
+    id: "excel-column-to-comma-list",
+    name: "Excel Column to Comma List",
+    description: "Paste a column from Excel and get a comma separated list, with quotes and duplicate removal.",
+    icon: "🧾",
+    color: "cyan",
+    to: "/excel-column-to-comma-separated-list",
+    status: "available",
+  },
+  {
     id: "csv-converter",
     name: "CSV Converter",
     description: "Turn a list into comma-separated values and download the result as a .csv file.",

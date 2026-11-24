@@ -96,7 +96,11 @@ function useDebouncedValue(value, delay) {
 
 const MODE = "listToDelimited";
 
-export default function Converter({ id }) {
+export default function Converter({
+  id,
+  placeholder = "Paste or type your data here…",
+  sampleInput = SAMPLE_INPUT,
+}) {
   const [input, setInput] = useState("");
   const [presetId, setPresetId] = useState("comma");
   const [customDelimiter, setCustomDelimiter] = useState("");
@@ -183,7 +187,7 @@ export default function Converter({ id }) {
   };
 
   const handleLoadSample = () => {
-    setInput(SAMPLE_INPUT);
+    setInput(sampleInput);
     setActiveQuickPreset(null);
   };
 
@@ -505,7 +509,7 @@ export default function Converter({ id }) {
             </div>
           </div>
           <LineNumberedTextarea
-            placeholder="Paste or type your data here…"
+            placeholder={placeholder}
             value={input}
             onChange={(e) => setInputGuarded(e.target.value)}
             ariaLabel="Input data"

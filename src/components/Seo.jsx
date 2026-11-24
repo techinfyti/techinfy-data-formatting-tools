@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+const SITE_URL = "https://delimitertool.com";
 const SITE_NAME = "TechInfy Data Tools";
 const OG_SITE_NAME = "Free Online Comma Separator & Delimiter Tool";
 const DEFAULT_DESCRIPTION =
@@ -23,6 +24,18 @@ export default function Seo({ title, description = DEFAULT_DESCRIPTION }) {
   useEffect(() => {
     const fullTitle = title ? `${title} | ${SITE_NAME}` : `Delimiter Tool – Free Online Delimiter Converter | TechInfy`;
     document.title = fullTitle;
+
+    // index.html hard-codes the canonical as the home page; without this every
+    // route would tell search engines it is a duplicate of "/".
+    const canonicalUrl = `${SITE_URL}${window.location.pathname}`;
+    let canonical = document.head.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", canonicalUrl);
+    setMetaTag("property", "og:url", canonicalUrl);
 
     setMetaTag("name", "description", description);
     setMetaTag("property", "og:title", fullTitle);
