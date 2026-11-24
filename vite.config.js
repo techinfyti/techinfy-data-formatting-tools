@@ -25,6 +25,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Without this, the SPA fallback answers these with the app's 404 page
+        // for anyone whose browser has the service worker installed.
+        navigateFallbackDenylist: [/^\/(sitemap\.xml|robots\.txt|ads\.txt)$/],
       },
     }),
   ],
