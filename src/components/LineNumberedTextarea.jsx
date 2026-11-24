@@ -118,6 +118,7 @@ export default function LineNumberedTextarea({ value, onChange, placeholder, rea
         onPaste={handlePasteCapture}
         readOnly={readOnly}
         spellCheck="false"
+        autoComplete="off"
         aria-label={ariaLabel}
         wrap="off"
       />
