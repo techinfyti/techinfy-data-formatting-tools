@@ -1,3 +1,12 @@
+import { GUIDES } from "./guides.js";
+
+// These guides are reached from an existing card above, so they don't get a second one.
+const GUIDES_WITH_EXISTING_CARD = [
+  "remove-duplicates-from-list",
+  "sort-list-alphabetically",
+  "sql-in-clause-generator",
+];
+
 export const TOOLS = [
   {
     id: "delimiter-converter",
@@ -14,7 +23,7 @@ export const TOOLS = [
     description: "Strip repeated lines or values from any list while preserving the original order.",
     icon: "🧹",
     color: "azure",
-    to: "/#converter",
+    to: "/remove-duplicates-from-list",
     status: "available",
   },
   {
@@ -23,7 +32,7 @@ export const TOOLS = [
     description: "Sort lists alphabetically (A–Z) or reverse-alphabetically (Z–A) in a click.",
     icon: "↕️",
     color: "cyan",
-    to: "/#converter",
+    to: "/sort-list-alphabetically",
     status: "available",
   },
   {
@@ -104,18 +113,18 @@ export const TOOLS = [
     description: "Wrap a list of values into a ready-to-use SQL IN clause or values list.",
     icon: "🗄️",
     color: "lagoon",
-    to: "/#converter",
+    to: "/sql-in-clause-generator",
     status: "available",
   },
-  {
-    id: "excel-column-to-comma-list",
-    name: "Excel Column to Comma List",
-    description: "Paste a column from Excel and get a comma separated list, with quotes and duplicate removal.",
-    icon: "🧾",
-    color: "cyan",
-    to: "/excel-column-to-comma-separated-list",
+  ...GUIDES.filter((g) => !GUIDES_WITH_EXISTING_CARD.includes(g.slug)).map((g) => ({
+    id: g.slug,
+    name: g.cardName,
+    description: g.blurb,
+    icon: g.icon,
+    color: g.color,
+    to: `/${g.slug}`,
     status: "available",
-  },
+  })),
   {
     id: "csv-converter",
     name: "CSV Converter",

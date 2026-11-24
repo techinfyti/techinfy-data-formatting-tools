@@ -21,6 +21,20 @@ export const DELIMITER_PRESETS = [
 // freeze report. Do not raise it without new evidence that changes that.
 export const MAX_INPUT_LENGTH = 75_000;
 
+export const DEFAULT_OPTIONS = {
+  removeDuplicates: false,
+  removeEmptyLines: true,
+  trimSpaces: true,
+  sortOrder: "none",
+  addQuotes: false,
+  quoteChar: "double",
+  removePrefix: "",
+  removeSuffix: "",
+  removeText: "",
+  prefix: "",
+  suffix: "",
+};
+
 /**
  * Resolve the active delimiter string from the UI state.
  * Handles named escape sequences a user might type into the custom field.

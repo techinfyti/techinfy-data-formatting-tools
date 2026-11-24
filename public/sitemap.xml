@@ -10,6 +10,12 @@
   <url><loc>https://delimitertool.com/excel-to-json</loc><priority>0.7</priority></url>
   <url><loc>https://delimitertool.com/text-to-json</loc><priority>0.7</priority></url>
   <url><loc>https://delimitertool.com/excel-column-to-comma-separated-list</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/sql-in-clause-generator</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/add-quotes-to-list</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/remove-duplicates-from-list</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/newline-to-comma</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/comma-separated-to-column</loc><priority>0.7</priority></url>
+  <url><loc>https://delimitertool.com/sort-list-alphabetically</loc><priority>0.7</priority></url>
   <url><loc>https://delimitertool.com/about</loc><priority>0.5</priority></url>
   <url><loc>https://delimitertool.com/privacy</loc><priority>0.3</priority></url>
   <url><loc>https://delimitertool.com/contact</loc><priority>0.4</priority></url>

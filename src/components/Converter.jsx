@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import {
+  DEFAULT_OPTIONS,
   DELIMITER_PRESETS,
   MAX_INPUT_LENGTH,
   PRESETS,
@@ -19,19 +20,6 @@ const BINARY_FILE_PATTERN = /\.(xlsx|xls|docx|doc|pdf|pptx|ppt|zip|rar|7z|png|jp
 // eslint-disable-next-line no-control-regex -- intentional: detecting binary content
 const BINARY_CONTENT_PATTERN = /[�\x00-\x08\x0E-\x1F]/g;
 
-const DEFAULT_OPTIONS = {
-  removeDuplicates: false,
-  removeEmptyLines: true,
-  trimSpaces: true,
-  sortOrder: "none",
-  addQuotes: false,
-  quoteChar: "double",
-  removePrefix: "",
-  removeSuffix: "",
-  removeText: "",
-  prefix: "",
-  suffix: "",
-};
 
 function countLines(text) {
   if (!text) return 0;
@@ -96,17 +84,23 @@ function useDebouncedValue(value, delay) {
 
 const MODE = "listToDelimited";
 
+// `defaults` only seeds the initial state, so a landing page can open the
+// converter already set up for its job (e.g. quotes on, sorted, SQL preset).
 export default function Converter({
   id,
   placeholder = "Paste or type your data here…",
   sampleInput = SAMPLE_INPUT,
+  defaults = {},
 }) {
+  const mode = defaults.mode ?? MODE;
+  // Loading or clearing input should not drop the preset a landing page opens with.
+  const startingQuickPreset = defaults.quickPreset ?? null;
   const [input, setInput] = useState("");
-  const [presetId, setPresetId] = useState("comma");
+  const [presetId, setPresetId] = useState(defaults.presetId ?? "comma");
   const [customDelimiter, setCustomDelimiter] = useState("");
-  const [options, setOptions] = useState(DEFAULT_OPTIONS);
-  const [activeQuickPreset, setActiveQuickPreset] = useState(null);
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [options, setOptions] = useState({ ...DEFAULT_OPTIONS, ...defaults.options });
+  const [activeQuickPreset, setActiveQuickPreset] = useState(startingQuickPreset);
+  const [showAdvanced, setShowAdvanced] = useState(defaults.showAdvanced ?? false);
   const [toast, showToast] = useToast();
   const fileInputRef = useRef(null);
   const lastAppliedRef = useRef(0);
@@ -137,8 +131,8 @@ export default function Converter({
         return { output: "", count: 0, error: "Could not apply this preset to the current input." };
       }
     }
-    return convert({ input: debouncedInput, mode: MODE, delimiter, options });
-  }, [debouncedInput, delimiter, options, isTooLarge, activeQuickPreset, input.length]);
+    return convert({ input: debouncedInput, mode, delimiter, options });
+  }, [debouncedInput, delimiter, options, isTooLarge, activeQuickPreset, input.length, mode]);
 
   const handleOptionChange = (key, value) => {
     setOptions((prev) => ({ ...prev, [key]: value }));
@@ -175,7 +169,7 @@ export default function Converter({
     try {
       const text = await navigator.clipboard.readText();
       setInputGuarded(text);
-      setActiveQuickPreset(null);
+      setActiveQuickPreset(startingQuickPreset);
     } catch {
       showToast("Clipboard access was blocked. Paste manually with Ctrl/Cmd+V.");
     }
@@ -183,12 +177,12 @@ export default function Converter({
 
   const handleClear = () => {
     setInput("");
-    setActiveQuickPreset(null);
+    setActiveQuickPreset(startingQuickPreset);
   };
 
   const handleLoadSample = () => {
     setInput(sampleInput);
-    setActiveQuickPreset(null);
+    setActiveQuickPreset(startingQuickPreset);
   };
 
   const handleCopy = async () => {
@@ -247,7 +241,7 @@ export default function Converter({
         return;
       }
       setInput(text);
-      setActiveQuickPreset(null);
+      setActiveQuickPreset(startingQuickPreset);
     };
     reader.onerror = () => showToast("Couldn't read that file.");
     reader.readAsText(file);

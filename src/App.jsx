@@ -5,6 +5,7 @@ import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import Home from "./pages/Home.jsx";
+import { GUIDES } from "./data/guides.js";
 
 // Lazy-loaded: only Home (the most common landing page, with the main
 // converter) ships in the initial bundle. Other pages load on navigation.
@@ -19,7 +20,7 @@ const XmlToJson = lazy(() => import("./pages/XmlToJson.jsx"));
 const YamlToJson = lazy(() => import("./pages/YamlToJson.jsx"));
 const ExcelToJson = lazy(() => import("./pages/ExcelToJson.jsx"));
 const TextToJson = lazy(() => import("./pages/TextToJson.jsx"));
-const ExcelColumnToCommaList = lazy(() => import("./pages/ExcelColumnToCommaList.jsx"));
+const GuidePage = lazy(() => import("./pages/GuidePage.jsx"));
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 function ScrollToTop() {
@@ -61,7 +62,9 @@ function Layout() {
               <Route path="/yaml-to-json" element={<YamlToJson />} />
             <Route path="/excel-to-json" element={<ExcelToJson />} />
             <Route path="/text-to-json" element={<TextToJson />} />
-              <Route path="/excel-column-to-comma-separated-list" element={<ExcelColumnToCommaList />} />
+              {GUIDES.map((g) => (
+                <Route key={g.slug} path={`/${g.slug}`} element={<GuidePage slug={g.slug} />} />
+              ))}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
